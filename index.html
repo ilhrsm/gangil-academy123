@@ -56,6 +56,8 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .top-bar-right { display: flex; gap: 8px; align-items: center; }
 .login-btn { padding: 3px 12px; background: #2471a3; color: #fff; border: none; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
 .login-btn:hover { background: #1a5276; }
+.anon-btn { padding: 3px 12px; background: #555; color: #fff; border: none; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
+.anon-btn:hover { background: #333; }
 .logout-btn { padding: 3px 10px; background: none; color: #aaa; border: 1px solid #2a4a6a; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
 .logout-btn:hover { color: #fff; border-color: #5a8aaa; }
 .admin-btn { padding: 3px 10px; background: #4a3000; color: #c8a030; border: 1px solid #6a4800; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
@@ -301,6 +303,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
         <button class="logout-btn" onclick="googleLogout()">로그아웃</button>
       </div>
       <button class="login-btn" id="loginBtn" onclick="googleLogin()">구글 로그인</button>
+      <button class="anon-btn" id="anonBtn" onclick="anonLogin()">익명 로그인</button>
       <button class="uid-copy-btn" id="uidCopyBtn" style="display:none;" onclick="copyMyUID()">내 UID 복사</button>
     </div>
   </div>
@@ -506,7 +509,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRV6NxlgzoM3wMmIJG3EIyOV7bbuCwrC8",
@@ -523,7 +526,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 // 관리자 UID — 로그인 후 콘솔(F12)에서 UID 확인 후 교체
-const ADMIN_UIDS = ['3JB7t2MDAdg146biBHHOWUmbn683'];
+const ADMIN_UIDS = ['REPLACE_WITH_YOUR_UID'];
 
 let currentUser = null, isAdmin = false;
 let currentBoard = 'all', currentSort = 'latest', currentPage = 1;
@@ -552,6 +555,7 @@ onAuthStateChanged(auth, async user => {
   if (user) {
     console.log('내 UID:', user.uid);
     document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('anonBtn').style.display = 'none';
     document.getElementById('userArea').style.display = 'flex';
     document.getElementById('userNameTop').textContent = user.displayName || user.email;
     const av = document.getElementById('userAvatar');
@@ -562,6 +566,7 @@ onAuthStateChanged(auth, async user => {
     try { await setDoc(doc(db,'users',user.uid),{ name:user.displayName||user.email, email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
   } else {
     document.getElementById('loginBtn').style.display = 'inline-block';
+    document.getElementById('anonBtn').style.display = 'inline-block';
     document.getElementById('userArea').style.display = 'none';
     document.getElementById('adminCrown').style.display = 'none';
     document.getElementById('adminPanelBtn').style.display = 'none';
@@ -578,6 +583,12 @@ window.copyMyUID = () => {
   }).catch(() => {
     prompt('아래 UID를 복사하세요:', user.uid);
   });
+};
+window.anonLogin = async () => {
+  try {
+    await signInAnonymously(auth);
+    toast('익명으로 로그인되었습니다');
+  } catch(e) { toast('익명 로그인 실패: ' + e.message); }
 };
 window.googleLogin = async () => { try { await signInWithPopup(auth, provider); } catch(e) { toast('로그인 실패'); } };
 window.googleLogout = async () => { await signOut(auth); toast('로그아웃'); };
