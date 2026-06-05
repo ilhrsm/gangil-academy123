@@ -162,6 +162,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 
 /* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 500; align-items: flex-start; justify-content: center; padding-top: 40px; overflow-y: auto; }
+#gameBg { z-index: 6000; }
 .modal-bg.open { display: flex; }
 .modal-box { background: #fff; width: 100%; max-width: 720px; border: 1px solid #ccc; border-top: 3px solid #1a5276; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: slideDown 0.2s ease; margin-bottom: 40px; }
 @keyframes slideDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
@@ -298,7 +299,7 @@ body.board-big   .post-table thead th { background: #fff5f5; }
 
 /* ===== GAME MODAL ===== */
 .game-modal-box { max-width: 520px; }
-.game-inner { padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.game-inner { padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 18px; pointer-events: auto; }
 .game-my-pts { font-size: 12px; color: #555; text-align: center; }
 .game-my-pts strong { color: #1a3a5c; font-size: 13px; }
 .game-mode-row { display: flex; gap: 14px; justify-content: center; }
@@ -1425,19 +1426,30 @@ window.doSpin = async () => {
 
   const didWin = Math.random() < successProb;
 
-  // 당첨 칸: 0번이 항상 승리 칸
-  const winSegIdx = 0;
-  const loseSegIdxes = Array.from({length:n-1},(_,i)=>i+1);
-  const targetIdx = didWin ? winSegIdx : loseSegIdxes[Math.floor(Math.random()*(n-1))];
+  // 결과에 맞는 칸 선택 (0번 = 승리, 나머지 = 꽝)
+  const winSegIdx  = 0;
+  const loseSegIdxes = Array.from({length: n - 1}, (_, i) => i + 1);
+  const targetIdx  = didWin
+    ? winSegIdx
+    : loseSegIdxes[Math.floor(Math.random() * (n - 1))];
 
-  // 룰렛 회전 계산
-  const sliceDeg = 360 / n;
-  const targetDeg = 360 - (targetIdx * sliceDeg + sliceDeg/2 - 10 + Math.random()*20);
-  const totalSpin = 1440 + targetDeg; // 4바퀴 + 목적지
-  const startAngle = rouletteAngle * (180/Math.PI);
-  const endAngle = startAngle + totalSpin;
+  // 바늘은 12시(위) 고정. rouletteAngle 만큼 캔버스가 회전하므로
+  // targetIdx 칸 중심이 12시에 오는 finalAngle 을 역산한다.
+  // drawRoulette: 칸 i의 start = rouletteAngle + i*sliceRad - PI/2
+  // 칸 i 중심 = rouletteAngle + i*sliceRad + sliceRad/2 - PI/2
+  // 이게 -PI/2 (12시)가 되려면 rouletteAngle = -(i*sliceRad + sliceRad/2)
+  const sliceRad   = (2 * Math.PI) / n;
+  const centerRad  = targetIdx * sliceRad + sliceRad / 2;
+  const jitter     = (Math.random() - 0.5) * sliceRad * 0.6; // 칸 안쪽 랜덤
+  const finalAngle = -(centerRad + jitter);
 
-  const duration = 3000;
+  // 현재 각도에서 finalAngle까지, 최소 3바퀴 추가로 회전
+  const startRad  = rouletteAngle;
+  const rawDelta  = ((finalAngle - startRad) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+  const totalRad  = rawDelta + 2 * Math.PI * 3; // 3바퀴 + 목적지
+  const endRad    = startRad + totalRad;
+
+  const duration  = 3000; // 3초
   const startTime = performance.now();
 
   function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
@@ -1445,13 +1457,12 @@ window.doSpin = async () => {
   function animate(now) {
     const elapsed = now - startTime;
     const t = Math.min(elapsed / duration, 1);
-    const angle = startAngle + (endAngle - startAngle) * easeOut(t);
-    rouletteAngle = (angle % 360) * (Math.PI / 180);
+    rouletteAngle = startRad + totalRad * easeOut(t);
     drawRoulette();
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      rouletteAngle = (endAngle % 360) * (Math.PI / 180);
+      rouletteAngle = endRad;
       drawRoulette(targetIdx);
       finishSpin(didWin, bet, prize);
     }
