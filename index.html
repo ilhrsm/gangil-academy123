@@ -310,6 +310,8 @@ body.board-big   .post-table thead th { background: #fff5f5; }
 .game-bet-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
 .bet-btn { padding: 5px 12px; border: 1px solid #1a3a5c; background: #fff; color: #1a3a5c; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
 .bet-btn:hover, .bet-btn.on { background: #1a3a5c; color: #fff; }
+.allin-btn { border-color: #c0392b; color: #c0392b; }
+.allin-btn:hover, .allin-btn.on { background: #c0392b; color: #fff; border-color: #c0392b; }
 .bet-input { width: 80px; padding: 5px 8px; border: 1px solid #ccc; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border-radius: 3px; text-align: center; outline: none; }
 .bet-input:focus { border-color: #1a3a5c; }
 .roulette-wrap { position: relative; width: 280px; height: 280px; }
@@ -507,7 +509,8 @@ body.board-big   .post-table thead th { background: #fff5f5; }
         <button class="bet-btn" onclick="setBet(50)">50P</button>
         <button class="bet-btn" onclick="setBet(100)">100P</button>
         <button class="bet-btn" onclick="setBet(500)">500P</button>
-        <input class="bet-input" id="betInput" type="number" value="10" min="1" placeholder="직접 입력">
+        <button class="bet-btn allin-btn" id="allInBtn" onclick="setAllIn()">올인</button>
+        <input class="bet-input" id="betInput" type="number" value="10" min="1" placeholder="직접 입력" oninput="document.querySelectorAll('.bet-btn').forEach(b=>b.classList.remove('on'))">
       </div>
 
       <div class="roulette-wrap">
@@ -1259,16 +1262,27 @@ function updateGameDisplay() {
   if (el) el.textContent = myPoints.toLocaleString() + 'P';
 }
 
-function selectMode(mode) {
+window.selectMode = function(mode) {
   gameMode = mode;
   document.getElementById('modeHalf').classList.toggle('on', mode==='half');
   document.getElementById('modeThird').classList.toggle('on', mode==='third');
   drawRoulette();
 }
 
-function setBet(v) {
+window.setBet = function(v) {
   document.getElementById('betInput').value = v;
-  document.querySelectorAll('.bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent)===v));
+  document.querySelectorAll('.bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent) === v));
+  // 올인 버튼은 별도 active 처리
+  const allInBtn = document.getElementById('allInBtn');
+  if (allInBtn) allInBtn.classList.remove('on');
+}
+
+window.setAllIn = function() {
+  const v = myPoints;
+  document.getElementById('betInput').value = v;
+  document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('on'));
+  const allInBtn = document.getElementById('allInBtn');
+  if (allInBtn) allInBtn.classList.add('on');
 }
 
 // 룰렛 그리기
