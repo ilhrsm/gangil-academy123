@@ -257,6 +257,45 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(50px); background: #222; color: #fff; padding: 9px 22px; border-radius: 3px; font-size: 12px; z-index: 9998; transition: transform 0.25s; pointer-events: none; white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+/* ===== POINT BADGE ===== */
+.point-badge { display: inline-block; background: #f39c12; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; letter-spacing: 0.5px; }
+.point-badge::before { content: '⭐ '; font-size: 10px; }
+
+/* ===== POST WARNING MODAL ===== */
+#postWarnOverlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 8000; align-items: center; justify-content: center; padding: 20px;
+}
+#postWarnOverlay.open { display: flex; }
+.warn-box {
+  background: #fff; border-top: 3px solid #c0392b;
+  max-width: 400px; width: 100%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  text-align: center; padding: 30px 24px;
+}
+.warn-icon { font-size: 36px; margin-bottom: 12px; }
+.warn-title { font-size: 14px; font-weight: 700; color: #c0392b; margin-bottom: 10px; }
+.warn-text { font-size: 12px; color: #555; line-height: 2; margin-bottom: 20px; background: #fff8f8; border: 1px solid #f0d0d0; padding: 12px 14px; }
+.warn-text strong { color: #c0392b; }
+.warn-timer { font-size: 22px; font-weight: 700; color: #1a5276; margin-bottom: 16px; }
+.warn-ok-btn { padding: 9px 36px; background: #1a5276; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: not-allowed; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
+.warn-ok-btn.ready { background: #1a5276; cursor: pointer; }
+.warn-ok-btn.ready:hover { background: #154360; }
+
+/* ===== LOCKED BOARD ===== */
+.locked-overlay { text-align: center; padding: 50px 20px; background: #fff; border: 1px solid #ccc; }
+.locked-icon { font-size: 40px; margin-bottom: 12px; }
+.locked-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 8px; }
+.locked-sub { font-size: 12px; color: #888; line-height: 1.8; }
+.locked-pts { font-size: 20px; font-weight: 700; color: #f39c12; margin: 8px 0; }
+
+/* ===== ADMIN POINT CONTROLS ===== */
+.a-pt-input { width: 60px; padding: 2px 6px; border: 1px solid #ccc; font-size: 11px; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; text-align: center; }
+.a-pt-give { padding: 2px 8px; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; margin-left: 4px; }
+.a-pt-give:hover { background: #c8e6c9; }
+.a-pt-del  { padding: 2px 8px; background: #fff0f0; color: #c0392b; border: 1px solid #f0c0c0; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; margin-left: 4px; }
+.a-pt-del:hover  { background: #ffd0d0; }
+
 @media (max-width: 780px) {
   .sidebar { display: none; }
   .td-views, .td-date, .td-likes { display: none; }
@@ -297,6 +336,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
       <div class="user-area" id="userArea">
         <img id="userAvatar" src="" alt="">
         <span id="userNameTop"></span>
+        <span class="point-badge" id="userPointBadge" style="display:none;">0P</span>
         <span class="admin-crown" id="adminCrown" style="display:none;"></span>
         <button class="admin-btn" id="adminPanelBtn" style="display:none;" onclick="openAdminPanel()">관리자</button>
         <button class="logout-btn" onclick="googleLogout()">로그아웃</button>
@@ -406,6 +446,21 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
   </div>
 </div>
 
+<!-- POST WARNING MODAL -->
+<div id="postWarnOverlay">
+  <div class="warn-box">
+    <div class="warn-icon">⚠️</div>
+    <div class="warn-title">포인트 악용 금지 안내</div>
+    <div class="warn-text">
+      포인트를 얻기 위해 <strong>글·댓글을 연속적으로 무의미하게 작성</strong>할 시<br>
+      <strong>해당 회원은 즉시 삭제 처리됩니다.</strong><br><br>
+      성실한 활동으로 포인트를 쌓아주세요.
+    </div>
+    <div class="warn-timer" id="warnTimer">3</div>
+    <button class="warn-ok-btn" id="warnOkBtn" onclick="confirmWarnAndWrite()" disabled>확인 후 작성하기</button>
+  </div>
+</div>
+
 <!-- WRITE MODAL -->
 <div class="modal-bg" id="writeBg">
   <div class="modal-box">
@@ -483,6 +538,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
     <div class="admin-tabs">
       <div class="admin-tab on" onclick="switchAdminTab('posts',this)">게시물 관리</div>
       <div class="admin-tab" onclick="switchAdminTab('users',this)">회원 관리</div>
+      <div class="admin-tab" onclick="switchAdminTab('points',this)">포인트 관리</div>
     </div>
     <div class="admin-section on" id="adminPosts">
       <table class="admin-table">
@@ -496,6 +552,13 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
         <tbody id="adminUserTbody"></tbody>
       </table>
     </div>
+    <div class="admin-section" id="adminPoints">
+      <p style="font-size:11px;color:#888;margin-bottom:12px;">포인트는 어드민만 지급/차감/초기화할 수 있으며 회원 간 양도는 불가합니다.</p>
+      <table class="admin-table">
+        <thead><tr><th>이름</th><th>이메일</th><th>현재 포인트</th><th>지급/차감</th></tr></thead>
+        <tbody id="adminPointTbody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -507,7 +570,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -532,6 +595,53 @@ let currentBoard = 'all', currentSort = 'latest', currentPage = 1;
 let currentPostId = null, pendingImgs = [], allPosts = [];
 let searchQ = '', searchType = 'all';
 const PER_PAGE = 15;
+
+// ===== POINT SYSTEM =====
+const POINT_POST    = 10;   // 글 작성
+const POINT_COMMENT = 10;   // 댓글 작성
+const POINT_LIKE    = 10;   // 좋아요 받기
+const POINT_ATTEND  = 40;   // 출석 체크
+const BOARD_SMALL_MIN = 100;  // 작은물 최소 포인트
+const BOARD_BIG_MIN   = 1000; // 큰물 최소 포인트
+
+let myPoints = 0;
+
+async function loadMyPoints() {
+  if (!currentUser) { myPoints = 0; return; }
+  try {
+    const snap = await getDoc(doc(db, 'users', currentUser.uid));
+    myPoints = snap.exists() ? (snap.data().points || 0) : 0;
+  } catch(e) { myPoints = 0; }
+  const badge = document.getElementById('userPointBadge');
+  if (badge) { badge.textContent = myPoints + 'P'; badge.style.display = 'inline-block'; }
+}
+
+async function addPoints(uid, amount) {
+  if (!uid) return;
+  try {
+    await updateDoc(doc(db, 'users', uid), { points: increment(amount) });
+    if (currentUser && currentUser.uid === uid) {
+      myPoints += amount;
+      const badge = document.getElementById('userPointBadge');
+      if (badge) badge.textContent = myPoints + 'P';
+      if (amount > 0) toast(`+${amount}P 획득!`);
+    }
+  } catch(e) {}
+}
+
+async function checkAttendance() {
+  if (!currentUser) return;
+  const today = new Date().toDateString();
+  try {
+    const snap = await getDoc(doc(db, 'users', currentUser.uid));
+    const last = snap.exists() ? (snap.data().lastAttend || '') : '';
+    if (last !== today) {
+      await updateDoc(doc(db, 'users', currentUser.uid), { lastAttend: today });
+      await addPoints(currentUser.uid, POINT_ATTEND);
+      toast('출석 체크 완료! +40P');
+    }
+  } catch(e) {}
+}
 
 const CAT = {
   notice: { label:'공지',    cls:'cat-notice', name:'공지사항' },
@@ -563,7 +673,12 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('adminPanelBtn').style.display = isAdmin ? 'inline-block' : 'none';
     document.getElementById('noticeOption').style.display = isAdmin ? 'block' : 'none';
     try { await setDoc(doc(db,'users',user.uid),{ name:user.displayName||user.email, email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
+    await loadMyPoints();
+    checkAttendance();
   } else {
+    myPoints = 0;
+    const badge = document.getElementById('userPointBadge');
+    if (badge) badge.style.display = 'none';
     document.getElementById('loginBtn').style.display = 'inline-block';
     document.getElementById('emailLoginBtn').style.display = 'inline-block';
     document.getElementById('userArea').style.display = 'none';
@@ -631,6 +746,27 @@ onSnapshot(query(collection(db,'posts'), orderBy('time','desc')), snap => {
 
 // BOARD NAV
 window.goBoard = cat => {
+  // 포인트 잠금 체크
+  if (cat === 'small' && !isAdmin && myPoints < BOARD_SMALL_MIN) {
+    currentBoard = cat; currentPage = 1; searchQ = '';
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('gnb-'+cat); if(el) el.classList.add('active');
+    document.getElementById('boardPathName').textContent = '작은물';
+    document.getElementById('boardTitleBar').textContent = '작은물';
+    showLockedBoard('작은물', BOARD_SMALL_MIN);
+    return;
+  }
+  if (cat === 'big' && !isAdmin && myPoints < BOARD_BIG_MIN) {
+    currentBoard = cat; currentPage = 1; searchQ = '';
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('gnb-'+cat); if(el) el.classList.add('active');
+    document.getElementById('boardPathName').textContent = '큰물';
+    document.getElementById('boardTitleBar').textContent = '큰물';
+    showLockedBoard('큰물', BOARD_BIG_MIN);
+    return;
+  }
   currentBoard = cat; currentPage = 1; searchQ = '';
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
@@ -640,6 +776,21 @@ window.goBoard = cat => {
   document.getElementById('boardTitleBar').textContent = name;
   renderAll();
 };
+
+function showLockedBoard(name, required) {
+  const myPts = myPoints;
+  const tb = document.getElementById('postTbody');
+  tb.innerHTML = `<tr><td colspan="7" style="padding:0;">
+    <div class="locked-overlay">
+      <div class="locked-icon">🔒</div>
+      <div class="locked-title">${name} 게시판</div>
+      <div class="locked-pts">${required.toLocaleString()}P 이상 필요</div>
+      <div class="locked-sub">현재 내 포인트: <strong>${myPts.toLocaleString()}P</strong><br>
+        글 작성(+10P), 댓글(+10P), 좋아요 받기(+10P), 출석체크(+40P)로<br>포인트를 쌓아 이용해보세요!</div>
+    </div>
+  </td></tr>`;
+  document.getElementById('paging').innerHTML = '';
+}
 
 function getFiltered() {
   let list = [...allPosts];
@@ -734,6 +885,29 @@ document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key
 // WRITE
 window.openWrite = () => {
   if(!currentUser){toast('로그인 후 글을 쓸 수 있어요');return;}
+  // 경고 모달 표시 (3초 카운트다운)
+  const overlay = document.getElementById('postWarnOverlay');
+  const timerEl = document.getElementById('warnTimer');
+  const okBtn = document.getElementById('warnOkBtn');
+  overlay.classList.add('open');
+  let sec = 3;
+  timerEl.textContent = sec;
+  okBtn.disabled = true;
+  okBtn.classList.remove('ready');
+  const countdown = setInterval(() => {
+    sec--;
+    timerEl.textContent = sec;
+    if (sec <= 0) {
+      clearInterval(countdown);
+      okBtn.disabled = false;
+      okBtn.classList.add('ready');
+      timerEl.textContent = '✔';
+    }
+  }, 1000);
+};
+
+window.confirmWarnAndWrite = () => {
+  document.getElementById('postWarnOverlay').classList.remove('open');
   pendingImgs=[]; document.getElementById('imgPreview').innerHTML='';
   document.getElementById('wTitle').value=''; document.getElementById('wContent').value='';
   document.getElementById('imgInput').value=''; document.getElementById('uploadNotice').textContent='';
@@ -785,7 +959,8 @@ window.submitPost = async () => {
       imgs: [...pendingImgs],
       likes:0, likedBy:[], views:0, cmtCount:0
     });
-    window.closeWrite(); toast('게시물이 등록되었습니다!'); currentPage=1;
+    await addPoints(currentUser.uid, POINT_POST);
+    window.closeWrite(); toast('게시물이 등록되었습니다! (+10P)'); currentPage=1;
   } catch(e){ toast('오류: '+e.message); console.error(e); }
   finally { btn.textContent='등록하기'; btn.disabled=false; }
 };
@@ -823,7 +998,15 @@ window.toggleLike = async () => {
   const liked = (p.likedBy||[]).includes(uid);
   const r2 = doc(db,'posts',currentPostId);
   if(liked){ await updateDoc(r2,{likedBy:arrayRemove(uid),likes:increment(-1)}); document.getElementById('likeBtn').classList.remove('on'); toast('추천 취소'); }
-  else { await updateDoc(r2,{likedBy:arrayUnion(uid),likes:increment(1)}); document.getElementById('likeBtn').classList.add('on'); toast('추천했습니다!'); }
+  else {
+    await updateDoc(r2,{likedBy:arrayUnion(uid),likes:increment(1)});
+    document.getElementById('likeBtn').classList.add('on');
+    toast('추천했습니다!');
+    // 글 작성자에게 포인트 지급 (자신 제외)
+    if (p.authorId && p.authorId !== uid) {
+      await addPoints(p.authorId, POINT_LIKE);
+    }
+  }
 };
 window.doShare = () => { navigator.clipboard?.writeText(location.href).then(()=>toast('링크가 복사되었습니다')).catch(()=>toast('공유: '+location.href)); };
 
@@ -854,6 +1037,7 @@ window.addCmt = async () => {
   try {
     await addDoc(collection(db,'posts',currentPostId,'comments'),{ author:currentUser.displayName||currentUser.email, authorPhoto:currentUser.photoURL||'', authorId:currentUser.uid, text, time:serverTimestamp() });
     await updateDoc(doc(db,'posts',currentPostId),{cmtCount:increment(1)});
+    await addPoints(currentUser.uid, POINT_COMMENT);
     document.getElementById('cmtText').value='';
   } catch(e){ toast('오류: '+e.message); }
 };
@@ -890,17 +1074,33 @@ window.openAdminPanel = async () => {
     </tr>`).join('');
   try {
     const snap = await getDocs(collection(db,'users'));
-    document.getElementById('adminUserTbody').innerHTML = snap.docs.map(d=>{
+    const rows = snap.docs.map(d=>{
       const u=d.data(), uid=d.id;
       const cnt = allPosts.filter(p=>p.authorId===uid).length;
-      return `<tr>
+      const pts = u.points || 0;
+      return { uid, u, cnt, pts };
+    });
+    document.getElementById('adminUserTbody').innerHTML = rows.map(({uid,u,cnt})=>`<tr>
         <td>${esc(u.name||'')}</td>
         <td style="font-size:11px;color:#888;">${esc(u.email||'')}</td>
         <td>${cnt}</td>
         <td><button class="a-ban" onclick="adminBanUser('${uid}','${esc(u.name||u.email||'')}')">글 전체삭제</button></td>
-      </tr>`;
-    }).join('');
-  } catch(e) { document.getElementById('adminUserTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">Firestore 권한 설정 필요</td></tr>`; }
+      </tr>`).join('');
+    document.getElementById('adminPointTbody').innerHTML = rows.map(({uid,u,pts})=>`<tr>
+        <td>${esc(u.name||'')}</td>
+        <td style="font-size:11px;color:#888;">${esc(u.email||'')}</td>
+        <td><strong style="color:#f39c12;">${pts.toLocaleString()}P</strong></td>
+        <td>
+          <input class="a-pt-input" id="ptInput_${uid}" type="number" placeholder="포인트" min="1">
+          <button class="a-pt-give" onclick="adminGivePoints('${uid}')">지급</button>
+          <button class="a-pt-del"  onclick="adminDeductPoints('${uid}')">차감</button>
+          <button class="a-del" onclick="adminResetPoints('${uid}','${esc(u.name||'')}')">초기화</button>
+        </td>
+      </tr>`).join('');
+  } catch(e) {
+    document.getElementById('adminUserTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">Firestore 권한 설정 필요</td></tr>`;
+    document.getElementById('adminPointTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">Firestore 권한 설정 필요</td></tr>`;
+  }
 };
 window.adminBanUser = async (uid, name) => {
   if(!isAdmin) return;
@@ -908,6 +1108,24 @@ window.adminBanUser = async (uid, name) => {
   const targets = allPosts.filter(p=>p.authorId===uid);
   for(const p of targets){ try{ await deleteDoc(doc(db,'posts',p.id)); }catch(e){} }
   toast(`${name} 게시물 ${targets.length}개 삭제`);
+};
+
+window.adminGivePoints = async uid => {
+  if(!isAdmin) return;
+  const val = parseInt(document.getElementById('ptInput_'+uid)?.value);
+  if(!val||val<=0) return toast('지급할 포인트를 입력하세요');
+  try { await updateDoc(doc(db,'users',uid),{points:increment(val)}); toast(`+${val}P 지급 완료`); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
+};
+window.adminDeductPoints = async uid => {
+  if(!isAdmin) return;
+  const val = parseInt(document.getElementById('ptInput_'+uid)?.value);
+  if(!val||val<=0) return toast('차감할 포인트를 입력하세요');
+  try { await updateDoc(doc(db,'users',uid),{points:increment(-val)}); toast(`-${val}P 차감 완료`); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
+};
+window.adminResetPoints = async (uid, name) => {
+  if(!isAdmin) return;
+  if(!confirm(`${name}의 포인트를 0으로 초기화하시겠습니까?`)) return;
+  try { await updateDoc(doc(db,'users',uid),{points:0}); toast('포인트 초기화 완료'); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
 };
 window.switchAdminTab = (tab, btn) => {
   document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
