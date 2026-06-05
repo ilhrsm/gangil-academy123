@@ -258,36 +258,26 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
 /* ===== POINT BADGE ===== */
-.point-badge { display: inline-block; background: #f39c12; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; letter-spacing: 0.5px; }
-.point-badge::before { content: '⭐ '; font-size: 10px; }
+.point-badge { display: inline-block; background: #1a3a5c; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; letter-spacing: 0.5px; }
 
 /* ===== POST WARNING MODAL ===== */
-#postWarnOverlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-  z-index: 8000; align-items: center; justify-content: center; padding: 20px;
-}
+#postWarnOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 8000; align-items: center; justify-content: center; padding: 20px; }
 #postWarnOverlay.open { display: flex; }
-.warn-box {
-  background: #fff; border-top: 3px solid #c0392b;
-  max-width: 400px; width: 100%;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-  text-align: center; padding: 30px 24px;
-}
+.warn-box { background: #fff; border-top: 3px solid #c0392b; max-width: 400px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.3); text-align: center; padding: 30px 24px; }
 .warn-icon { font-size: 36px; margin-bottom: 12px; }
 .warn-title { font-size: 14px; font-weight: 700; color: #c0392b; margin-bottom: 10px; }
 .warn-text { font-size: 12px; color: #555; line-height: 2; margin-bottom: 20px; background: #fff8f8; border: 1px solid #f0d0d0; padding: 12px 14px; }
 .warn-text strong { color: #c0392b; }
-.warn-timer { font-size: 22px; font-weight: 700; color: #1a5276; margin-bottom: 16px; }
-.warn-ok-btn { padding: 9px 36px; background: #1a5276; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: not-allowed; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
-.warn-ok-btn.ready { background: #1a5276; cursor: pointer; }
-.warn-ok-btn.ready:hover { background: #154360; }
+.warn-timer { font-size: 22px; font-weight: 700; color: #1a3a5c; margin-bottom: 16px; }
+.warn-ok-btn { padding: 9px 36px; background: #aaa; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: not-allowed; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
+.warn-ok-btn.ready { background: #1a3a5c; cursor: pointer; }
+.warn-ok-btn.ready:hover { background: #14304e; }
 
 /* ===== LOCKED BOARD ===== */
 .locked-overlay { text-align: center; padding: 50px 20px; background: #fff; border: 1px solid #ccc; }
-.locked-icon { font-size: 40px; margin-bottom: 12px; }
 .locked-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 8px; }
 .locked-sub { font-size: 12px; color: #888; line-height: 1.8; }
-.locked-pts { font-size: 20px; font-weight: 700; color: #f39c12; margin: 8px 0; }
+.locked-pts { font-size: 20px; font-weight: 700; color: #1a3a5c; margin: 8px 0; }
 
 /* ===== ADMIN POINT CONTROLS ===== */
 .a-pt-input { width: 60px; padding: 2px 6px; border: 1px solid #ccc; font-size: 11px; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; text-align: center; }
@@ -295,6 +285,48 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .a-pt-give:hover { background: #c8e6c9; }
 .a-pt-del  { padding: 2px 8px; background: #fff0f0; color: #c0392b; border: 1px solid #f0c0c0; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; margin-left: 4px; }
 .a-pt-del:hover  { background: #ffd0d0; }
+
+/* ===== BOARD BACKGROUND THEMES ===== */
+body.board-small { background: #e8f5e9; }
+body.board-big   { background: #ffebee; }
+body.board-small .post-table thead th { background: #f1f8f2; }
+body.board-big   .post-table thead th { background: #fff5f5; }
+
+/* ===== GAME ENTRY BUTTON ===== */
+.game-entry-btn { width: 100%; padding: 11px 0; background: #1a3a5c; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
+.game-entry-btn:hover { background: #14304e; }
+
+/* ===== GAME MODAL ===== */
+.game-modal-box { max-width: 520px; }
+.game-inner { padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.game-my-pts { font-size: 12px; color: #555; text-align: center; }
+.game-my-pts strong { color: #1a3a5c; font-size: 13px; }
+.game-mode-row { display: flex; gap: 14px; justify-content: center; }
+.game-mode-row > div { text-align: center; }
+.mode-btn { padding: 7px 22px; border: 2px solid #1a3a5c; background: #fff; color: #1a3a5c; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; min-width: 90px; }
+.mode-btn:hover, .mode-btn.on { background: #1a3a5c; color: #fff; }
+.mode-desc { font-size: 10px; color: #999; margin-top: 4px; }
+.game-bet-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.bet-btn { padding: 5px 12px; border: 1px solid #1a3a5c; background: #fff; color: #1a3a5c; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+.bet-btn:hover, .bet-btn.on { background: #1a3a5c; color: #fff; }
+.bet-input { width: 80px; padding: 5px 8px; border: 1px solid #ccc; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border-radius: 3px; text-align: center; outline: none; }
+.bet-input:focus { border-color: #1a3a5c; }
+.roulette-wrap { position: relative; width: 280px; height: 280px; }
+.roulette-canvas { border-radius: 50%; box-shadow: 0 4px 16px rgba(0,0,0,0.12); display: block; }
+.roulette-arrow { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 20px; color: #1a3a5c; z-index: 10; pointer-events: none; font-weight: 900; }
+.roulette-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; background: #fff; border-radius: 50%; border: 3px solid #1a3a5c; z-index: 10; pointer-events: none; }
+.spin-btn { padding: 10px 44px; background: #1a3a5c; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; transition: background 0.15s; }
+.spin-btn:hover { background: #14304e; }
+.spin-btn:disabled { background: #aaa; cursor: not-allowed; }
+.game-result { font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 3px; text-align: center; min-width: 240px; }
+.game-result.win  { background: #e8f5e9; color: #1b5e20; border: 1px solid #81c784; }
+.game-result.lose { background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; }
+.game-result.idle { background: #f7f7f7; color: #999; border: 1px solid #e0e0e0; font-weight: 400; }
+.game-limit-warn { font-size: 11px; color: #c0392b; text-align: center; }
+
+/* ===== CONFETTI ===== */
+.confetti-piece { position: fixed; width: 9px; height: 9px; top: -10px; z-index: 9999; pointer-events: none; border-radius: 2px; animation: confettiFall linear forwards; }
+@keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
 @media (max-width: 780px) {
   .sidebar { display: none; }
@@ -442,6 +474,50 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
         <li><a onclick="goBoard('small')">작은물 <span class="side-cnt" id="cntSmall">0</span></a></li>
         <li><a onclick="goBoard('big')">큰물 <span class="side-cnt" id="cntBig">0</span></a></li>
       </ul>
+    </div>
+
+    <div style="margin-top:100px;">
+      <button class="game-entry-btn" onclick="openGameModal()">포인트 게임</button>
+    </div>
+  </div>
+</div>
+
+<!-- POINT GAME MODAL -->
+<div class="modal-bg" id="gameBg">
+  <div class="modal-box game-modal-box">
+    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">포인트 게임 <button class="modal-close-btn" onclick="document.getElementById('gameBg').classList.remove('open')">✕</button></div>
+    <div class="game-inner">
+      <div class="game-my-pts">내 포인트: <strong id="gamePtsDisplay">0P</strong></div>
+
+      <div class="game-mode-row">
+        <div>
+          <button class="mode-btn on" id="modeHalf" onclick="selectMode('half')">2배 모드</button>
+          <div class="mode-desc">1/2 확률 · 성공시 2배</div>
+        </div>
+        <div>
+          <button class="mode-btn" id="modeThird" onclick="selectMode('third')">3배 모드</button>
+          <div class="mode-desc">1/3 확률 · 성공시 3배</div>
+        </div>
+      </div>
+
+      <div class="game-bet-row">
+        <span style="font-size:12px;color:#555;font-weight:600;">베팅</span>
+        <button class="bet-btn" onclick="setBet(10)">10P</button>
+        <button class="bet-btn" onclick="setBet(50)">50P</button>
+        <button class="bet-btn" onclick="setBet(100)">100P</button>
+        <button class="bet-btn" onclick="setBet(500)">500P</button>
+        <input class="bet-input" id="betInput" type="number" value="10" min="1" placeholder="직접 입력">
+      </div>
+
+      <div class="roulette-wrap">
+        <div class="roulette-arrow">▼</div>
+        <canvas class="roulette-canvas" id="rouletteCanvas" width="280" height="280"></canvas>
+        <div class="roulette-center"></div>
+      </div>
+
+      <button class="spin-btn" id="spinBtn" onclick="doSpin()">돌리기</button>
+      <div class="game-result idle" id="gameResult">베팅 포인트를 설정하고 돌려보세요.</div>
+      <div class="game-limit-warn" id="gameLimitWarn" style="display:none;">오늘의 게임 한도에 도달했습니다.</div>
     </div>
   </div>
 </div>
@@ -601,7 +677,7 @@ const POINT_POST    = 10;   // 글 작성
 const POINT_COMMENT = 10;   // 댓글 작성
 const POINT_LIKE    = 10;   // 좋아요 받기
 const POINT_ATTEND  = 40;   // 출석 체크
-const BOARD_SMALL_MIN = 100;  // 작은물 최소 포인트
+const BOARD_SMALL_MIN = 500;  // 작은물 최소 포인트
 const BOARD_BIG_MIN   = 1000; // 큰물 최소 포인트
 
 let myPoints = 0;
@@ -675,6 +751,7 @@ onAuthStateChanged(auth, async user => {
     try { await setDoc(doc(db,'users',user.uid),{ name:user.displayName||user.email, email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
     await loadMyPoints();
     checkAttendance();
+    setTimeout(updateGameDisplay, 300);
   } else {
     myPoints = 0;
     const badge = document.getElementById('userPointBadge');
@@ -767,6 +844,11 @@ window.goBoard = cat => {
     showLockedBoard('큰물', BOARD_BIG_MIN);
     return;
   }
+  // 게시판 배경 테마
+  document.body.classList.remove('board-small','board-big');
+  if (cat === 'small' && (isAdmin || myPoints >= BOARD_SMALL_MIN)) document.body.classList.add('board-small');
+  if (cat === 'big'   && (isAdmin || myPoints >= BOARD_BIG_MIN))   document.body.classList.add('board-big');
+
   currentBoard = cat; currentPage = 1; searchQ = '';
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
@@ -1157,6 +1239,256 @@ let toastT;
 window.toast = msg => { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); };
 
 window.goBoard('all');
+
+// ===== GAME MODAL =====
+window.openGameModal = () => {
+  document.getElementById('gameBg').classList.add('open');
+  setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 50);
+};
+
+// ===== ROULETTE GAME =====
+const GAME_MAX_WIN = Infinity; // 한도 없음
+let gameMode = 'half'; // 'half' | 'third'
+let gameSessionWin = 0; // 이번 세션 총 획득량
+let spinning = false;
+let rouletteAngle = 0;
+
+function updateGameDisplay() {
+  const el = document.getElementById('gamePtsDisplay');
+  if (el) el.textContent = myPoints.toLocaleString() + 'P';
+}
+
+function selectMode(mode) {
+  gameMode = mode;
+  document.getElementById('modeHalf').classList.toggle('on', mode==='half');
+  document.getElementById('modeThird').classList.toggle('on', mode==='third');
+  drawRoulette();
+}
+
+function setBet(v) {
+  document.getElementById('betInput').value = v;
+  document.querySelectorAll('.bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent)===v));
+}
+
+// 룰렛 그리기
+function drawRoulette(highlightIdx) {
+  const canvas = document.getElementById('rouletteCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 140, cy = 140, r = 130;
+
+  let segments;
+  if (gameMode === 'half') {
+    segments = [
+      { label: '승리', color: '#1a3a5c', win: true },
+      { label: '꽝',   color: '#8a9bb0', win: false },
+    ];
+  } else {
+    segments = [
+      { label: '승리', color: '#1a3a5c', win: true },
+      { label: '꽝',   color: '#8a9bb0', win: false },
+      { label: '꽝',   color: '#5d7a96', win: false },
+    ];
+  }
+
+  const n = segments.length;
+  const sliceAngle = (2 * Math.PI) / n;
+
+  ctx.clearRect(0, 0, 280, 280);
+
+  segments.forEach((seg, i) => {
+    const start = rouletteAngle + i * sliceAngle - Math.PI / 2;
+    const end = start + sliceAngle;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = highlightIdx === i ? lighten(seg.color) : seg.color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // 텍스트
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(start + sliceAngle / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 15px Noto Sans KR, sans-serif';
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 3;
+    ctx.fillText(seg.label, r - 14, 5);
+    ctx.restore();
+  });
+
+  // 테두리
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2*Math.PI);
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+
+function lighten(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, ((n>>16)&0xff)+60);
+  const g = Math.min(255, ((n>>8)&0xff)+60);
+  const b = Math.min(255, (n&0xff)+60);
+  return `rgb(${r},${g},${b})`;
+}
+
+// 효과음 (Web Audio API)
+function playWinSound() {
+  try {
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const notes = [523, 659, 784, 1047]; // C E G C
+    notes.forEach((freq, i) => {
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.frequency.value = freq;
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.3, ac.currentTime + i*0.12);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.12 + 0.3);
+      o.start(ac.currentTime + i*0.12);
+      o.stop(ac.currentTime + i*0.12 + 0.35);
+    });
+  } catch(e) {}
+}
+
+function playLoseSound() {
+  try {
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.frequency.setValueAtTime(300, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(80, ac.currentTime + 0.4);
+    o.type = 'sawtooth';
+    g.gain.setValueAtTime(0.3, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.5);
+    o.start(ac.currentTime);
+    o.stop(ac.currentTime + 0.5);
+  } catch(e) {}
+}
+
+// 폭죽 이펙트
+function launchConfetti() {
+  const colors = ['#f39c12','#e74c3c','#2ecc71','#3498db','#9b59b6','#1abc9c','#e67e22','#fff'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.width = (8 + Math.random()*8) + 'px';
+    el.style.height = (8 + Math.random()*8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    const dur = 1.5 + Math.random() * 2;
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = Math.random() * 0.5 + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 0.5) * 1000);
+  }
+}
+
+window.doSpin = async () => {
+  if (!currentUser) { toast('로그인 후 이용하세요'); return; }
+  if (spinning) return;
+
+  const bet = parseInt(document.getElementById('betInput').value) || 0;
+  if (bet <= 0) { toast('베팅 포인트를 입력하세요'); return; }
+  if (bet > myPoints) { toast('포인트가 부족합니다'); return; }
+
+  // 한도 체크
+  if (gameSessionWin >= GAME_MAX_WIN) {
+    document.getElementById('gameLimitWarn').style.display = 'block';
+    document.getElementById('spinBtn').disabled = true;
+    return;
+  }
+
+  spinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('gameResult').className = 'game-result idle';
+  document.getElementById('gameResult').textContent = '돌리는 중...';
+
+  const n = gameMode === 'half' ? 2 : 3;
+
+  const prize = bet * (gameMode === 'half' ? 2 : 3);
+  // 하우스 엣지: 2배 모드 실제 승률 38%, 3배 모드 실제 승률 28%
+  // → 기댓값이 항상 마이너스라 장기적으로 반드시 잃게 됨
+  // 단, 가끔(약 5% 확률) '럭키 스핀'이 발동해 일반 확률의 2.5배로 올라
+  // 그 순간엔 크게 따는 느낌을 줌
+  const baseProb = gameMode === 'half' ? 0.38 : 0.28;
+  const isLucky = Math.random() < 0.05; // 5% 확률로 럭키 스핀
+  const successProb = isLucky ? Math.min(baseProb * 2.5, 0.95) : baseProb;
+
+  const didWin = Math.random() < successProb;
+
+  // 당첨 칸: 0번이 항상 승리 칸
+  const winSegIdx = 0;
+  const loseSegIdxes = Array.from({length:n-1},(_,i)=>i+1);
+  const targetIdx = didWin ? winSegIdx : loseSegIdxes[Math.floor(Math.random()*(n-1))];
+
+  // 룰렛 회전 계산
+  const sliceDeg = 360 / n;
+  const targetDeg = 360 - (targetIdx * sliceDeg + sliceDeg/2 - 10 + Math.random()*20);
+  const totalSpin = 1440 + targetDeg; // 4바퀴 + 목적지
+  const startAngle = rouletteAngle * (180/Math.PI);
+  const endAngle = startAngle + totalSpin;
+
+  const duration = 3000;
+  const startTime = performance.now();
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const angle = startAngle + (endAngle - startAngle) * easeOut(t);
+    rouletteAngle = (angle % 360) * (Math.PI / 180);
+    drawRoulette();
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      rouletteAngle = (endAngle % 360) * (Math.PI / 180);
+      drawRoulette(targetIdx);
+      finishSpin(didWin, bet, prize);
+    }
+  }
+  requestAnimationFrame(animate);
+};
+
+async function finishSpin(didWin, bet, prize) {
+  spinning = false;
+  document.getElementById('spinBtn').disabled = false;
+
+  const resultEl = document.getElementById('gameResult');
+
+  if (didWin) {
+    const netGain = prize - bet; // 베팅액 제외 순이익
+    gameSessionWin += netGain;
+    await addPoints(currentUser.uid, netGain);
+    playWinSound();
+    launchConfetti();
+    resultEl.className = 'game-result win';
+    resultEl.textContent = `🎉 승리! +${netGain.toLocaleString()}P 획득! (총 ${myPoints.toLocaleString()}P)`;
+    updateGameDisplay();
+    if (gameSessionWin >= GAME_MAX_WIN) {
+      document.getElementById('gameLimitWarn').style.display = 'block';
+      document.getElementById('spinBtn').disabled = true;
+    }
+  } else {
+    await addPoints(currentUser.uid, -bet);
+    playLoseSound();
+    resultEl.className = 'game-result lose';
+    resultEl.textContent = `😭 꽝! -${bet.toLocaleString()}P (총 ${myPoints.toLocaleString()}P)`;
+    updateGameDisplay();
+  }
+}
+
+// 초기 룰렛 그리기
+setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 100);
 </script>
 
 <!-- 이메일 로그인/회원가입 모달 -->
