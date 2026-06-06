@@ -485,8 +485,7 @@ body.board-big .card-likes { color: #e57373; }
     <div class="top-bar-left">
       <a onclick="goBoard('all')">강일 네트워크</a>
       <a onclick="goBoard('free')">자유게시판</a>
-      <a onclick="goBoard('small')">작은물</a>
-      <a onclick="goBoard('big')">큰물</a>
+      <a onclick="openNickModal()" id="nickChangeLink" style="display:none; color:#f0c040; font-weight:600; letter-spacing:0.5px;">✏ 닉네임 변경</a>
     </div>
     <div class="top-bar-right">
       <div class="user-area" id="userArea">
@@ -518,8 +517,6 @@ body.board-big .card-likes { color: #e57373; }
       <div class="gnb-item active" id="gnb-all"><a onclick="goBoard('all')">전체글</a></div>
       <div class="gnb-item" id="gnb-notice"><a onclick="goBoard('notice')">공지사항</a></div>
       <div class="gnb-item" id="gnb-free"><a onclick="goBoard('free')">자유게시판</a></div>
-      <div class="gnb-item" id="gnb-small"><a onclick="goBoard('small')">작은물</a></div>
-      <div class="gnb-item" id="gnb-big"><a onclick="goBoard('big')">큰물</a></div>
     </nav>
   </div>
 </div>
@@ -595,8 +592,6 @@ body.board-big .card-likes { color: #e57373; }
         <li><a onclick="goBoard('all')">전체글 <span class="side-cnt" id="cntAll">0</span></a></li>
         <li><a onclick="goBoard('notice')">공지사항 <span class="side-cnt" id="cntNotice">0</span></a></li>
         <li><a onclick="goBoard('free')">자유게시판 <span class="side-cnt" id="cntFree">0</span></a></li>
-        <li><a onclick="goBoard('small')">작은물 <span class="side-cnt" id="cntSmall">0</span></a></li>
-        <li><a onclick="goBoard('big')">큰물 <span class="side-cnt" id="cntBig">0</span></a></li>
       </ul>
     </div>
 
@@ -672,8 +667,6 @@ body.board-big .card-likes { color: #e57373; }
         <td>
           <select class="w-select" id="wCat" style="width:auto;">
             <option value="free">자유게시판</option>
-            <option value="small">작은물</option>
-            <option value="big">큰물</option>
             <option value="notice" id="noticeOption" style="display:none;">공지사항 (관리자)</option>
           </select>
         </td>
@@ -869,14 +862,24 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('loginBtn').style.display = 'none';
     document.getElementById('emailLoginBtn').style.display = 'none';
     document.getElementById('userArea').style.display = 'flex';
-    document.getElementById('userNameTop').textContent = user.displayName || user.email;
+    document.getElementById('nickChangeLink').style.display = 'inline';
     const av = document.getElementById('userAvatar');
     av.src = user.photoURL || ''; if(!user.photoURL) av.style.display='none';
     document.getElementById('adminCrown').style.display = isAdmin ? 'inline' : 'none';
     document.getElementById('adminPanelBtn').style.display = isAdmin ? 'inline-block' : 'none';
     document.getElementById('noticeOption').style.display = isAdmin ? 'block' : 'none';
-    try { await setDoc(doc(db,'users',user.uid),{ name:user.displayName||user.email, email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
+    try { await setDoc(doc(db,'users',user.uid),{ email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
     await loadMyPoints();
+    // 닉네임: Firestore customName 우선, 없으면 displayName
+    try {
+      const snap = await getDoc(doc(db,'users',user.uid));
+      const d = snap.exists() ? snap.data() : {};
+      const nick = d.customName || user.displayName || user.email;
+      document.getElementById('userNameTop').textContent = nick;
+      if (!d.name) await setDoc(doc(db,'users',user.uid),{ name: nick },{merge:true});
+    } catch(e) {
+      document.getElementById('userNameTop').textContent = user.displayName || user.email;
+    }
     checkAttendance();
     setTimeout(updateGameDisplay, 300);
   } else {
@@ -886,12 +889,76 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('loginBtn').style.display = 'inline-block';
     document.getElementById('emailLoginBtn').style.display = 'inline-block';
     document.getElementById('userArea').style.display = 'none';
+    document.getElementById('nickChangeLink').style.display = 'none';
     document.getElementById('adminCrown').style.display = 'none';
     document.getElementById('adminPanelBtn').style.display = 'none';
     document.getElementById('noticeOption').style.display = 'none';
   }
   renderAll();
 });
+
+// ===== NICKNAME CHANGE =====
+const NICK_CHANGE_COST = 200;
+
+window.openNickModal = async () => {
+  if (!currentUser) { toast('로그인 후 이용하세요'); return; }
+  document.getElementById('nickErrMsg').textContent = '';
+  document.getElementById('nickInput').value = '';
+  // 현재 닉네임 표시
+  try {
+    const snap = await getDoc(doc(db,'users',currentUser.uid));
+    const d = snap.exists() ? snap.data() : {};
+    const nick = d.customName || currentUser.displayName || currentUser.email;
+    const changeCount = d.nickChangeCount || 0;
+    document.getElementById('nickCurrent').textContent = nick;
+    document.getElementById('nickMyPts').textContent = (d.points||0) + 'P';
+    const costLine = document.getElementById('nickCostBadge');
+    if (changeCount === 0) {
+      costLine.innerHTML = `<strong>닉네임 변경 비용</strong><br>· 1회부터: <strong style="color:#c0392b;">200P</strong> 차감<br>현재 포인트: <strong style="color:#1a3a5c;">${(d.points||0)}P</strong>`;
+    } else {
+      costLine.innerHTML = `<strong>닉네임 변경 비용</strong><br>· 변경 횟수: <strong>${changeCount}회</strong><br>· 차감 포인트: <strong style="color:#c0392b;">200P</strong><br>현재 포인트: <strong id="nickMyPts">${(d.points||0)}P</strong>`;
+    }
+  } catch(e) {}
+  document.getElementById('nickModal').style.display = 'flex';
+};
+
+window.closeNickModal = () => {
+  document.getElementById('nickModal').style.display = 'none';
+};
+
+window.submitNickChange = async () => {
+  if (!currentUser) return;
+  const newNick = document.getElementById('nickInput').value.trim();
+  const errEl = document.getElementById('nickErrMsg');
+  errEl.textContent = '';
+  if (newNick.length < 2 || newNick.length > 12) {
+    errEl.textContent = '닉네임은 2~12자 사이여야 합니다.'; return;
+  }
+  if (/[<>&"']/.test(newNick)) {
+    errEl.textContent = '특수문자(<>&"\')는 사용할 수 없습니다.'; return;
+  }
+  const btn = document.getElementById('nickSubmitBtn');
+  btn.disabled = true; btn.textContent = '처리 중...';
+  try {
+    const snap = await getDoc(doc(db,'users',currentUser.uid));
+    const d = snap.exists() ? snap.data() : {};
+    const changeCount = d.nickChangeCount || 0;
+    const pts = d.points || 0;
+    if (pts < NICK_CHANGE_COST) {
+      errEl.textContent = `포인트가 부족합니다. (필요: ${NICK_CHANGE_COST}P, 보유: ${pts}P)`;
+      btn.disabled = false; btn.textContent = '변경하기'; return;
+    }
+    const updateData = { customName: newNick, name: newNick, nickChangeCount: changeCount + 1, points: pts - NICK_CHANGE_COST };
+    await updateDoc(doc(db,'users',currentUser.uid), updateData);
+    myPoints -= NICK_CHANGE_COST;
+    const badge = document.getElementById('userPointBadge');
+    if (badge) badge.textContent = myPoints + 'P';
+    document.getElementById('userNameTop').textContent = newNick;
+    closeNickModal();
+    toast(`닉네임이 "${newNick}"으로 변경됐습니다! (-${NICK_CHANGE_COST}P)`);
+  } catch(e) { errEl.textContent = '오류: ' + e.message; }
+  btn.disabled = false; btn.textContent = '변경하기';
+};
 
 window.copyMyUID = () => {
   const user = auth.currentUser;
@@ -951,30 +1018,7 @@ onSnapshot(query(collection(db,'posts'), orderBy('time','desc')), snap => {
 // BOARD NAV
 window.goBoard = cat => {
   // 포인트 잠금 체크
-  if (cat === 'small' && !isAdmin && myPoints < BOARD_SMALL_MIN) {
-    currentBoard = cat; currentPage = 1; searchQ = '';
-    document.getElementById('searchInput').value = '';
-    document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
-    const el = document.getElementById('gnb-'+cat); if(el) el.classList.add('active');
-    document.getElementById('boardPathName').textContent = '작은물';
-    document.getElementById('boardTitleBar').textContent = '작은물';
-    showLockedBoard('작은물', BOARD_SMALL_MIN);
-    return;
-  }
-  if (cat === 'big' && !isAdmin && myPoints < BOARD_BIG_MIN) {
-    currentBoard = cat; currentPage = 1; searchQ = '';
-    document.getElementById('searchInput').value = '';
-    document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
-    const el = document.getElementById('gnb-'+cat); if(el) el.classList.add('active');
-    document.getElementById('boardPathName').textContent = '큰물';
-    document.getElementById('boardTitleBar').textContent = '큰물';
-    showLockedBoard('큰물', BOARD_BIG_MIN);
-    return;
-  }
-  // 게시판 배경 테마
-  document.body.classList.remove('board-small','board-big');
-  if (cat === 'small' && (isAdmin || myPoints >= BOARD_SMALL_MIN)) document.body.classList.add('board-small');
-  if (cat === 'big'   && (isAdmin || myPoints >= BOARD_BIG_MIN))   document.body.classList.add('board-big');
+
 
   currentBoard = cat; currentPage = 1; searchQ = '';
   document.getElementById('searchInput').value = '';
@@ -1041,56 +1085,6 @@ function renderTable() {
   const page = list.slice(start, start+PER_PAGE);
   const tb = document.getElementById('postTbody');
 
-  // 작은물·큰물: 카드 그리드 레이아웃
-  if (currentBoard === 'small' || currentBoard === 'big') {
-    // 테이블 헤더 숨기기
-    const thead = document.querySelector('.post-table thead');
-    if (thead) thead.style.display = 'none';
-    // 테이블 border 제거
-    document.querySelector('.post-table').style.border = 'none';
-    document.querySelector('.post-table').style.background = 'transparent';
-
-    if (!page.length) {
-      tb.innerHTML = `<tr><td colspan="7"><div style="text-align:center;padding:40px;color:#bbb;font-size:13px;">게시물이 없습니다. 첫 번째 글을 작성해보세요!</div></td></tr>`;
-      document.getElementById('paging').innerHTML = '';
-      return;
-    }
-    const cards = page.map(p => {
-      const cat = CAT[p.cat]||{label:p.cat,cls:'cat-free'};
-      const adminDel = isAdmin ? `<button class="admin-del-btn" onclick="event.stopPropagation();adminDelDirect('${p.id}')">삭제</button>` : '';
-      let thumbHtml = '';
-      if (p.imgs && p.imgs.length) {
-        thumbHtml = `<div class="card-thumb"><img src="${p.imgs[0]}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;color:#bbb;\\">🖼</div>'"></div>`;
-      } else {
-        thumbHtml = `<div class="card-thumb-empty">📝</div>`;
-      }
-      const cmtBadge = p.cmtCount ? `<span style="font-size:11px;color:#c0392b;font-weight:700;margin-left:4px;">[${p.cmtCount}]</span>` : '';
-      return `
-        <div class="post-card" onclick="openDetail('${p.id}')">
-          ${thumbHtml}
-          <div class="card-body">
-            <div class="card-cat-row">
-              <span class="cat-badge ${cat.cls}">${cat.label}</span>
-              ${adminDel}
-            </div>
-            <div class="card-title">${esc(p.title)}${cmtBadge}</div>
-            <div class="card-meta">
-              <span>${esc(p.author||'')}</span>
-              <span class="card-likes">♥ ${p.likes||0}</span>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
-    tb.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;"><div class="card-grid">${cards}</div></td></tr>`;
-    renderPaging(totalPages);
-    return;
-  }
-
-  // 일반 게시판: 기존 테이블
-  const thead = document.querySelector('.post-table thead');
-  if (thead) thead.style.display = '';
-  const tbl = document.querySelector('.post-table');
-  tbl.style.border = '';
   tbl.style.background = '';
 
   if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다. 첫 번째 글을 작성해보세요!</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
@@ -1135,7 +1129,7 @@ function renderSidebar() {
     ? pop.map(p=>`<li><a onclick="openDetail('${p.id}')">${esc(p.title)} <span class="side-cnt">${p.likes||0}</span></a></li>`).join('')
     : '<li style="color:#bbb;">없음</li>';
   document.getElementById('cntAll').textContent = allPosts.length;
-  ['notice','free','small','big'].forEach(c=>{
+  ['notice','free'].forEach(c=>{
     const el=document.getElementById('cnt'+c.charAt(0).toUpperCase()+c.slice(1));
     if(el) el.textContent=allPosts.filter(p=>p.cat===c).length;
   });
@@ -1218,16 +1212,18 @@ window.submitPost = async () => {
   const btn = document.getElementById('submitBtn');
   btn.textContent='저장 중...'; btn.disabled=true;
   try {
+    const snap2 = await getDoc(doc(db,'users',currentUser.uid));
+    const authorName = (snap2.exists() && snap2.data().customName) || currentUser.displayName || currentUser.email;
     await addDoc(collection(db,'posts'), {
       cat, title, content,
-      author: currentUser.displayName||currentUser.email,
+      author: authorName,
       authorId: currentUser.uid,
       authorPhoto: currentUser.photoURL||'',
       time: serverTimestamp(),
       imgs: [...pendingImgs],
       likes:0, likedBy:[], views:0, cmtCount:0
     });
-    const postPts = cat==='small' ? POINT_POST_SMALL : cat==='big' ? POINT_POST_BIG : POINT_POST;
+    const postPts = POINT_POST;
     await addPoints(currentUser.uid, postPts);
     window.closeWrite(); toast(`게시물이 등록되었습니다! (+${postPts}P)`); currentPage=1;
   } catch(e){ toast('오류: '+e.message); console.error(e); }
@@ -1304,7 +1300,9 @@ window.addCmt = async () => {
   const text = document.getElementById('cmtText').value.trim();
   if(!text||!currentPostId) return;
   try {
-    await addDoc(collection(db,'posts',currentPostId,'comments'),{ author:currentUser.displayName||currentUser.email, authorPhoto:currentUser.photoURL||'', authorId:currentUser.uid, text, time:serverTimestamp() });
+    const snapC = await getDoc(doc(db,'users',currentUser.uid));
+    const cmtAuthor = (snapC.exists() && snapC.data().customName) || currentUser.displayName || currentUser.email;
+    await addDoc(collection(db,'posts',currentPostId,'comments'),{ author:cmtAuthor, authorPhoto:currentUser.photoURL||'', authorId:currentUser.uid, text, time:serverTimestamp() });
     await updateDoc(doc(db,'posts',currentPostId),{cmtCount:increment(1)});
     await addPoints(currentUser.uid, POINT_COMMENT);
     document.getElementById('cmtText').value='';
@@ -1698,6 +1696,34 @@ async function finishSpin(didWin, bet, prize) {
 // 초기 룰렛 그리기
 setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 100);
 </script>
+
+<!-- NICKNAME CHANGE MODAL -->
+<div id="nickModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9000; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:340px; padding:0; border-top:3px solid #1a5276; box-shadow:0 4px 24px rgba(0,0,0,0.25); border-radius:2px; overflow:hidden;">
+    <div style="background:#1a5276; color:#fff; padding:11px 16px; font-size:13px; font-weight:700; letter-spacing:1px; display:flex; justify-content:space-between; align-items:center;">
+      ✏ 닉네임 변경
+      <button onclick="closeNickModal()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
+    </div>
+    <div style="padding:22px 20px;">
+      <div id="nickCostBadge" style="background:#f0f6fc; border:1px solid #c8dff0; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:12px; color:#1a3a5c; line-height:1.8;">
+        <strong>닉네임 변경 비용</strong><br>
+        · 최초 1회: <strong style="color:#1a7a4a;">무료</strong><br>
+        · 2회째~: <strong style="color:#c0392b;">500P</strong> 차감<br>
+        <span id="nickMyPtsLine" style="color:#555;">현재 포인트: <strong id="nickMyPts">0P</strong></span>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:11px; color:#888; margin-bottom:5px;">현재 닉네임</div>
+        <div id="nickCurrent" style="font-size:13px; font-weight:700; color:#333; padding:6px 10px; background:#f7f7f7; border:1px solid #eee; border-radius:2px;"></div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px; color:#888; margin-bottom:5px;">새 닉네임 <span style="color:#bbb;">(2~12자)</span></div>
+        <input id="nickInput" type="text" maxlength="12" placeholder="새 닉네임 입력" style="width:100%; padding:8px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:2px; outline:none; box-sizing:border-box;">
+      </div>
+      <button onclick="submitNickChange()" id="nickSubmitBtn" style="width:100%; padding:10px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:2px; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px;">변경하기</button>
+      <div id="nickErrMsg" style="text-align:center; font-size:11px; color:#c0392b; margin-top:8px; min-height:16px;"></div>
+    </div>
+  </div>
+</div>
 
 <!-- 이메일 로그인/회원가입 모달 -->
 <div id="emailModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9000; align-items:center; justify-content:center;">
