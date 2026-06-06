@@ -279,6 +279,10 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .locked-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 8px; }
 .locked-sub { font-size: 12px; color: #888; line-height: 1.8; }
 .locked-pts { font-size: 20px; font-weight: 700; color: #1a3a5c; margin: 8px 0; }
+body.board-big .locked-overlay { background: #222; border-color: #444; }
+body.board-big .locked-title { color: #ccc; }
+body.board-big .locked-sub { color: #777; }
+body.board-big .locked-pts { color: #aaa; }
 
 /* ===== ADMIN POINT CONTROLS ===== */
 .a-pt-input { width: 60px; padding: 2px 6px; border: 1px solid #ccc; font-size: 11px; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; text-align: center; }
@@ -289,9 +293,126 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 
 /* ===== BOARD BACKGROUND THEMES ===== */
 body.board-small { background: #e8f5e9; }
-body.board-big   { background: #ffebee; }
+body.board-big   { background: #1a1a1a; }
 body.board-small .post-table thead th { background: #f1f8f2; }
-body.board-big   .post-table thead th { background: #fff5f5; }
+body.board-big   .post-table thead th { background: #2a2a2a; }
+
+/* ===== 큰물 DARK THEME ===== */
+body.board-big .board-path { background: #222; border-bottom-color: #444; }
+body.board-big .board-path-left { color: #777; }
+body.board-big .board-path-left span { color: #bbb; }
+body.board-big .board-title-bar { color: #ddd; }
+body.board-big .board-title-bar::before { background: #888; }
+body.board-big .board-top { background: #222; border-color: #444; }
+body.board-big .sort-btn { background: #2a2a2a; border-color: #444; color: #aaa; }
+body.board-big .sort-btn:hover, body.board-big .sort-btn.on { background: #555; border-color: #555; color: #fff; }
+body.board-big .write-btn { background: #444; }
+body.board-big .write-btn:hover { background: #555; }
+body.board-big .search-bar { background: #222; border-color: #444; }
+body.board-big .search-select, body.board-big .search-input { background: #333; border-color: #555; color: #ccc; }
+body.board-big .search-submit { background: #555; }
+body.board-big .search-submit:hover { background: #666; }
+body.board-big .side-box { background: #222; border-color: #444; }
+body.board-big .side-box-title { background: #333; color: #ccc; }
+body.board-big .side-list li { border-bottom-color: #333; }
+body.board-big .side-list li a { color: #aaa; }
+body.board-big .side-list li a:hover { color: #fff; }
+body.board-big .side-stat-row { border-bottom-color: #333; color: #aaa; }
+body.board-big .side-stat-row strong { color: #bbb; }
+body.board-big .page-btn { background: #2a2a2a; border-color: #444; color: #aaa; }
+body.board-big .page-btn:hover, body.board-big .page-btn.on { background: #555; border-color: #555; color: #fff; }
+
+/* ===== CARD GRID LAYOUT (작은물 & 큰물) ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  background: transparent;
+  padding: 14px 0;
+  border: none;
+}
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.card-thumb-empty {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: #f0f4f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.card-body {
+  padding: 10px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.card-cat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  font-size: 11px;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid #f0f0f0;
+}
+.card-likes { color: #c0392b; font-weight: 700; }
+
+/* 큰물 카드 다크 스타일 */
+body.board-big .post-card { background: #282828; border-color: #444; }
+body.board-big .post-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+body.board-big .card-thumb-empty { background: #1e1e1e; color: #555; }
+body.board-big .card-title { color: #ddd; }
+body.board-big .card-meta { color: #666; border-top-color: #333; }
+body.board-big .card-likes { color: #e57373; }
 
 /* ===== GAME ENTRY BUTTON ===== */
 .game-entry-btn { width: 100%; padding: 11px 0; background: #1a3a5c; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
@@ -677,7 +798,9 @@ let searchQ = '', searchType = 'all';
 const PER_PAGE = 15;
 
 // ===== POINT SYSTEM =====
-const POINT_POST    = 10;   // 글 작성
+const POINT_POST        = 10;   // 글 작성 (자유게시판/공지)
+const POINT_POST_SMALL  = 100;  // 작은물 글 작성
+const POINT_POST_BIG    = 200;  // 큰물 글 작성
 const POINT_COMMENT = 10;   // 댓글 작성
 const POINT_LIKE    = 10;   // 좋아요 받기
 const POINT_ATTEND  = 40;   // 출석 체크
@@ -866,13 +989,19 @@ window.goBoard = cat => {
 function showLockedBoard(name, required) {
   const myPts = myPoints;
   const tb = document.getElementById('postTbody');
-  tb.innerHTML = `<tr><td colspan="7" style="padding:0;">
+  // 카드 게시판이므로 thead 숨기기
+  const thead = document.querySelector('.post-table thead');
+  if (thead) thead.style.display = 'none';
+  const tbl = document.querySelector('.post-table');
+  tbl.style.border = 'none';
+  tbl.style.background = 'transparent';
+  tb.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;">
     <div class="locked-overlay">
       <div class="locked-icon">🔒</div>
       <div class="locked-title">${name} 게시판</div>
       <div class="locked-pts">${required.toLocaleString()}P 이상 필요</div>
       <div class="locked-sub">현재 내 포인트: <strong>${myPts.toLocaleString()}P</strong><br>
-        글 작성(+10P), 댓글(+10P), 좋아요 받기(+10P), 출석체크(+40P)로<br>포인트를 쌓아 이용해보세요!</div>
+        글 작성(+10P~+200P), 댓글(+10P), 좋아요 받기(+10P), 출석체크(+40P)로<br>포인트를 쌓아 이용해보세요!</div>
     </div>
   </td></tr>`;
   document.getElementById('paging').innerHTML = '';
@@ -911,6 +1040,59 @@ function renderTable() {
   const start = (currentPage-1)*PER_PAGE;
   const page = list.slice(start, start+PER_PAGE);
   const tb = document.getElementById('postTbody');
+
+  // 작은물·큰물: 카드 그리드 레이아웃
+  if (currentBoard === 'small' || currentBoard === 'big') {
+    // 테이블 헤더 숨기기
+    const thead = document.querySelector('.post-table thead');
+    if (thead) thead.style.display = 'none';
+    // 테이블 border 제거
+    document.querySelector('.post-table').style.border = 'none';
+    document.querySelector('.post-table').style.background = 'transparent';
+
+    if (!page.length) {
+      tb.innerHTML = `<tr><td colspan="7"><div style="text-align:center;padding:40px;color:#bbb;font-size:13px;">게시물이 없습니다. 첫 번째 글을 작성해보세요!</div></td></tr>`;
+      document.getElementById('paging').innerHTML = '';
+      return;
+    }
+    const cards = page.map(p => {
+      const cat = CAT[p.cat]||{label:p.cat,cls:'cat-free'};
+      const adminDel = isAdmin ? `<button class="admin-del-btn" onclick="event.stopPropagation();adminDelDirect('${p.id}')">삭제</button>` : '';
+      let thumbHtml = '';
+      if (p.imgs && p.imgs.length) {
+        thumbHtml = `<div class="card-thumb"><img src="${p.imgs[0]}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;color:#bbb;\\">🖼</div>'"></div>`;
+      } else {
+        thumbHtml = `<div class="card-thumb-empty">📝</div>`;
+      }
+      const cmtBadge = p.cmtCount ? `<span style="font-size:11px;color:#c0392b;font-weight:700;margin-left:4px;">[${p.cmtCount}]</span>` : '';
+      return `
+        <div class="post-card" onclick="openDetail('${p.id}')">
+          ${thumbHtml}
+          <div class="card-body">
+            <div class="card-cat-row">
+              <span class="cat-badge ${cat.cls}">${cat.label}</span>
+              ${adminDel}
+            </div>
+            <div class="card-title">${esc(p.title)}${cmtBadge}</div>
+            <div class="card-meta">
+              <span>${esc(p.author||'')}</span>
+              <span class="card-likes">♥ ${p.likes||0}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+    tb.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;"><div class="card-grid">${cards}</div></td></tr>`;
+    renderPaging(totalPages);
+    return;
+  }
+
+  // 일반 게시판: 기존 테이블
+  const thead = document.querySelector('.post-table thead');
+  if (thead) thead.style.display = '';
+  const tbl = document.querySelector('.post-table');
+  tbl.style.border = '';
+  tbl.style.background = '';
+
   if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다. 첫 번째 글을 작성해보세요!</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
   tb.innerHTML = page.map((p,i) => {
     const cat = CAT[p.cat]||{label:p.cat,cls:'cat-free'};
@@ -1045,8 +1227,9 @@ window.submitPost = async () => {
       imgs: [...pendingImgs],
       likes:0, likedBy:[], views:0, cmtCount:0
     });
-    await addPoints(currentUser.uid, POINT_POST);
-    window.closeWrite(); toast('게시물이 등록되었습니다! (+10P)'); currentPage=1;
+    const postPts = cat==='small' ? POINT_POST_SMALL : cat==='big' ? POINT_POST_BIG : POINT_POST;
+    await addPoints(currentUser.uid, postPts);
+    window.closeWrite(); toast(`게시물이 등록되었습니다! (+${postPts}P)`); currentPage=1;
   } catch(e){ toast('오류: '+e.message); console.error(e); }
   finally { btn.textContent='등록하기'; btn.disabled=false; }
 };
