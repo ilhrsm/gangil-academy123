@@ -677,8 +677,8 @@ body.board-big .card-likes { color: #e57373; }
         <th>사진 첨부</th>
         <td>
           <div class="upload-area" id="uploadArea">
-            <input type="file" id="imgInput" accept="image/*" multiple onchange="onImgSelect(event)">
-            <p><strong>클릭</strong>하거나 드래그하여 업로드 (최대 5장 · 장당 1MB 이하)</p>
+            <input type="file" id="imgInput" accept="image/*,video/*" multiple onchange="onImgSelect(event)">
+            <p><strong>클릭</strong>하거나 드래그하여 업로드 (최대 10개 · 이미지 10MB / 동영상 500MB 이하)</p>
           </div>
           <div class="upload-notice" id="uploadNotice"></div>
           <div class="img-preview-row" id="imgPreview"></div>
@@ -1084,8 +1084,11 @@ function renderTable() {
   const start = (currentPage-1)*PER_PAGE;
   const page = list.slice(start, start+PER_PAGE);
   const tb = document.getElementById('postTbody');
-
-  tbl.style.background = '';
+  const tbl = document.querySelector('.post-table');
+  const thead = document.querySelector('.post-table thead');
+  if (tbl) tbl.style.background = '';
+  if (tbl) tbl.style.border = '';
+  if (thead) thead.style.display = '';
 
   if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다. 첫 번째 글을 작성해보세요!</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
   tb.innerHTML = page.map((p,i) => {
@@ -1181,24 +1184,43 @@ document.getElementById('writeBg').addEventListener('click', e=>{ if(e.target===
 const ua = document.getElementById('uploadArea');
 ua.addEventListener('dragover', e=>{e.preventDefault();ua.classList.add('drag');});
 ua.addEventListener('dragleave', ()=>ua.classList.remove('drag'));
-ua.addEventListener('drop', e=>{e.preventDefault();ua.classList.remove('drag');processFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));});
+ua.addEventListener('drop', e=>{e.preventDefault();ua.classList.remove('drag');processFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/')));});
 window.onImgSelect = e => processFiles(Array.from(e.target.files));
 
 function processFiles(files) {
-  const left = 5-pendingImgs.length;
+  const MAX_COUNT = 10;
+  const left = MAX_COUNT - pendingImgs.length;
   const notice = document.getElementById('uploadNotice');
-  files.slice(0,left).forEach(f=>{
-    if(f.size > 1*1024*1024){ notice.textContent=`${f.name} 파일이 1MB를 초과합니다 (건너뜀)`; return; }
-    const r = new FileReader();
-    r.onload = ev => { pendingImgs.push(ev.target.result); renderPreviews(); };
-    r.readAsDataURL(f);
+  files.slice(0, left).forEach(f => {
+    const isVideo = f.type.startsWith('video/');
+    const isImage = f.type.startsWith('image/');
+    const maxSize = isVideo ? 500 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxLabel = isVideo ? '500MB' : '10MB';
+    if (f.size > maxSize) { notice.textContent = `${f.name} 파일이 ${maxLabel}를 초과합니다 (건너뜀)`; return; }
+    if (isVideo) {
+      // 동영상은 URL.createObjectURL 사용 (base64는 너무 큼)
+      const url = URL.createObjectURL(f);
+      pendingImgs.push({ type: 'video', url, name: f.name, file: f });
+      renderPreviews();
+    } else if (isImage) {
+      const r = new FileReader();
+      r.onload = ev => { pendingImgs.push({ type: 'image', url: ev.target.result }); renderPreviews(); };
+      r.readAsDataURL(f);
+    }
   });
-  if(files.length>left) notice.textContent='최대 5장까지 첨부 가능합니다';
+  if (files.length > left) notice.textContent = `최대 ${MAX_COUNT}개까지 첨부 가능합니다`;
 }
 function renderPreviews() {
-  document.getElementById('imgPreview').innerHTML = pendingImgs.map((s,i)=>
-    `<div class="prev-item"><img src="${s}"><button class="prev-del" onclick="delImg(${i})">✕</button></div>`
-  ).join('');
+  document.getElementById('imgPreview').innerHTML = pendingImgs.map((item, i) => {
+    if (item.type === 'video') {
+      return `<div class="prev-item" style="width:120px;height:80px;">
+        <video src="${item.url}" style="width:100%;height:100%;object-fit:cover;" muted></video>
+        <button class="prev-del" onclick="delImg(${i})">✕</button>
+        <div style="position:absolute;bottom:2px;left:3px;font-size:9px;color:#fff;background:rgba(0,0,0,0.5);padding:1px 3px;border-radius:2px;">동영상</div>
+      </div>`;
+    }
+    return `<div class="prev-item"><img src="${item.url}"><button class="prev-del" onclick="delImg(${i})">✕</button></div>`;
+  }).join('');
 }
 window.delImg = i => { pendingImgs.splice(i,1); renderPreviews(); };
 
@@ -1220,7 +1242,7 @@ window.submitPost = async () => {
       authorId: currentUser.uid,
       authorPhoto: currentUser.photoURL||'',
       time: serverTimestamp(),
-      imgs: [...pendingImgs],
+      imgs: pendingImgs.map(item => typeof item === 'string' ? { type: 'image', url: item } : { type: item.type, url: item.url, name: item.name||'' }),
       likes:0, likedBy:[], views:0, cmtCount:0
     });
     const postPts = POINT_POST;
@@ -1247,7 +1269,17 @@ window.openDetail = async id => {
   document.getElementById('likeBtn').className = `action-like${liked?' on':''}`;
   document.getElementById('adminDelPostBtn').style.display = isAdmin ? 'inline-block' : 'none';
   const di = document.getElementById('dImgs');
-  if(p.imgs?.length){ di.innerHTML=p.imgs.map(s=>`<img class="view-img" src="${s}" onclick="openLb('${s}')" loading="lazy">`).join(''); di.style.display='flex'; }
+  if(p.imgs?.length){
+    di.innerHTML = p.imgs.map(item => {
+      const src = typeof item === 'string' ? item : item.url;
+      const type = typeof item === 'object' ? item.type : 'image';
+      if (type === 'video') {
+        return `<video class="view-img" src="${src}" controls style="max-width:100%;max-height:400px;" loading="lazy"></video>`;
+      }
+      return `<img class="view-img" src="${src}" onclick="openLb('${src}')" loading="lazy">`;
+    }).join('');
+    di.style.display='flex';
+  }
   else { di.innerHTML=''; di.style.display='none'; }
   document.getElementById('dContent').textContent = p.content;
   loadComments(id);
