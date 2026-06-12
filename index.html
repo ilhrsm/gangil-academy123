@@ -458,6 +458,20 @@ body.board-big .card-likes { color: #e57373; }
   .gnb { display: none; }
 }
 </style>
+<script>
+function agreeDisc() {
+  sessionStorage.setItem('gn_ok','1');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+  var banner = document.getElementById('anonInfoBanner');
+  if (banner) {
+    banner.style.display = 'block';
+    setTimeout(function() {
+      banner.style.opacity = '0';
+      setTimeout(function() { banner.style.display='none'; banner.style.opacity='1'; }, 500);
+    }, 6000);
+  }
+}
+</script>
 </head>
 <body>
 
@@ -473,8 +487,8 @@ body.board-big .card-likes { color: #e57373; }
         <strong>어떠한 책임도 지지 않습니다.</strong><br><br>
         아래 버튼을 클릭하면 위 내용에 동의한 것으로 간주합니다.
       </div>
-      <button class="disc-agree" id="discAgreeBtn">동의하고 입장하기</button>
-      <span class="disc-refuse" id="discRefuseBtn">동의하지 않음</span>
+      <button class="disc-agree" onclick="agreeDisc()">동의하고 입장하기</button>
+      <span class="disc-refuse" onclick="history.back()">동의하지 않음</span>
     </div>
   </div>
 </div>
@@ -766,30 +780,6 @@ body.board-big .card-likes { color: #e57373; }
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- DISCLAIMER: 모듈 스크립트와 독립적으로 동작 -->
-<script>
-  (function() {
-    function agreeDisc() {
-      sessionStorage.setItem('gn_ok', '1');
-      document.getElementById('disclaimerOverlay').style.display = 'none';
-      var banner = document.getElementById('anonInfoBanner');
-      if (banner) {
-        banner.style.display = 'block';
-        setTimeout(function() {
-          banner.style.opacity = '0';
-          setTimeout(function() { banner.style.display = 'none'; banner.style.opacity = '1'; }, 500);
-        }, 6000);
-      }
-    }
-    // 이미 동의한 경우 바로 숨김
-    if (sessionStorage.getItem('gn_ok')) {
-      document.getElementById('disclaimerOverlay').style.display = 'none';
-    }
-    document.getElementById('discAgreeBtn').addEventListener('click', agreeDisc);
-    document.getElementById('discRefuseBtn').addEventListener('click', function() { history.back(); });
-  })();
-</script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -879,7 +869,8 @@ const CAT = {
   big:    { label:'큰물',    cls:'cat-big',    name:'큰물' },
 };
 
-// DISCLAIMER: 별도 일반 스크립트에서 처리됨
+// DISCLAIMER: head의 일반 스크립트에서 처리
+if (sessionStorage.getItem('gn_ok')) document.getElementById('disclaimerOverlay').style.display = 'none';
 
 // AUTH
 onAuthStateChanged(auth, async user => {
