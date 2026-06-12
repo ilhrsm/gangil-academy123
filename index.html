@@ -473,8 +473,8 @@ body.board-big .card-likes { color: #e57373; }
         <strong>어떠한 책임도 지지 않습니다.</strong><br><br>
         아래 버튼을 클릭하면 위 내용에 동의한 것으로 간주합니다.
       </div>
-      <button class="disc-agree" onclick="agreeDisc()">동의하고 입장하기</button>
-      <span class="disc-refuse" onclick="history.back()">동의하지 않음</span>
+      <button class="disc-agree" id="discAgreeBtn">동의하고 입장하기</button>
+      <span class="disc-refuse" id="discRefuseBtn">동의하지 않음</span>
     </div>
   </div>
 </div>
@@ -856,10 +856,9 @@ const CAT = {
 };
 
 // DISCLAIMER
-window.agreeDisc = () => {
+function agreeDisc() {
   sessionStorage.setItem('gn_ok','1');
   document.getElementById('disclaimerOverlay').style.display = 'none';
-  // 익명 로그인 안내 배너 6초 표시
   const banner = document.getElementById('anonInfoBanner');
   if (banner) {
     banner.style.display = 'block';
@@ -868,7 +867,10 @@ window.agreeDisc = () => {
       setTimeout(() => { banner.style.display = 'none'; banner.style.opacity = '1'; }, 500);
     }, 6000);
   }
-};
+}
+window.agreeDisc = agreeDisc;
+document.getElementById('discAgreeBtn').addEventListener('click', agreeDisc);
+document.getElementById('discRefuseBtn').addEventListener('click', () => history.back());
 if (sessionStorage.getItem('gn_ok')) document.getElementById('disclaimerOverlay').style.display = 'none';
 
 // AUTH
