@@ -1271,14 +1271,6 @@ window.submitPost = async () => {
     btn.disabled = false;
   }
 };
-  } catch (e) {
-    toast('오류: ' + e.message);
-    console.error(e);
-  } finally {
-    btn.textContent = '등록하기';
-    btn.disabled = false;
-  }
-};
 
 // DETAIL
 window.openDetail = async id => {
