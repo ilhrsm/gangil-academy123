@@ -1102,8 +1102,8 @@ function renderTable() {
   const start = (currentPage-1)*PER_PAGE;
   const page = list.slice(start, start+PER_PAGE);
   const tb = document.getElementById('postTbody');
-
-  tbl.style.background = '';
+  const tbl = document.querySelector('.post-table');
+  if (tbl) tbl.style.background = '';
 
   if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다. 첫 번째 글을 작성해보세요!</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
   tb.innerHTML = page.map((p,i) => {
