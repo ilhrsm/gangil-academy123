@@ -458,20 +458,6 @@ body.board-big .card-likes { color: #e57373; }
   .gnb { display: none; }
 }
 </style>
-<script>
-function agreeDisc() {
-  sessionStorage.setItem('gn_ok','1');
-  document.getElementById('disclaimerOverlay').style.display = 'none';
-  var banner = document.getElementById('anonInfoBanner');
-  if (banner) {
-    banner.style.display = 'block';
-    setTimeout(function() {
-      banner.style.opacity = '0';
-      setTimeout(function() { banner.style.display='none'; banner.style.opacity='1'; }, 500);
-    }, 6000);
-  }
-}
-</script>
 </head>
 <body>
 
@@ -487,7 +473,7 @@ function agreeDisc() {
         <strong>어떠한 책임도 지지 않습니다.</strong><br><br>
         아래 버튼을 클릭하면 위 내용에 동의한 것으로 간주합니다.
       </div>
-      <button class="disc-agree" onclick="agreeDisc()">동의하고 입장하기</button>
+      <button class="disc-agree" onclick="window.agreeDisc()">동의하고 입장하기</button>
       <span class="disc-refuse" onclick="history.back()">동의하지 않음</span>
     </div>
   </div>
@@ -869,7 +855,20 @@ const CAT = {
   big:    { label:'큰물',    cls:'cat-big',    name:'큰물' },
 };
 
-// DISCLAIMER: head의 일반 스크립트에서 처리
+// DISCLAIMER
+window.agreeDisc = () => {
+  sessionStorage.setItem('gn_ok','1');
+  document.getElementById('disclaimerOverlay').style.display = 'none';
+  // 익명 로그인 안내 배너 6초 표시
+  const banner = document.getElementById('anonInfoBanner');
+  if (banner) {
+    banner.style.display = 'block';
+    setTimeout(() => {
+      banner.style.opacity = '0';
+      setTimeout(() => { banner.style.display = 'none'; banner.style.opacity = '1'; }, 500);
+    }, 6000);
+  }
+};
 if (sessionStorage.getItem('gn_ok')) document.getElementById('disclaimerOverlay').style.display = 'none';
 
 // AUTH
