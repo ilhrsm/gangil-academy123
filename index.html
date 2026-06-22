@@ -520,6 +520,7 @@ body.board-big .card-likes { color: #e57373; }
       <div class="gnb-item active" id="gnb-all"><a onclick="goBoard('all')">전체글</a></div>
       <div class="gnb-item" id="gnb-notice"><a onclick="goBoard('notice')">공지사항</a></div>
       <div class="gnb-item" id="gnb-free"><a onclick="goBoard('free')">자유게시판</a></div>
+      <div class="gnb-item" id="gnb-random"><a onclick="openRandomChat()">💬 랜덤채팅</a></div>
     </nav>
   </div>
 </div>
@@ -768,7 +769,7 @@ body.board-big .card-likes { color: #e57373; }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc, getDoc, where, limit, writeBatch, deleteField } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 
@@ -1737,6 +1738,363 @@ async function finishSpin(didWin, bet, prize) {
 
 // 초기 룰렛 그리기
 setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 100);
+
+// ===================================================================
+// ===== RANDOM CHAT SYSTEM ===========================================
+// ===================================================================
+
+let rcRoomId = null;       // 현재 채팅방 ID
+let rcMyRole = null;       // 'A' | 'B'
+let rcUnsubscribeRoom = null;  // Firestore 구독 해제 함수
+let rcUnsubscribeMsgs = null;  // 메시지 구독 해제 함수
+let rcSearchInterval = null;   // 매칭 폴링 interval
+let rcPendingFile = null;      // 첨부할 파일 객체
+let rcDotsInterval = null;     // 점 애니메이션 interval
+
+// 내 랜덤채팅용 닉(uid 앞 8자)
+function getRcMyId() {
+  if (!currentUser) return '익명';
+  return currentUser.uid.slice(0, 8);
+}
+
+// 랜덤채팅 모달 열기
+window.openRandomChat = () => {
+  if (!currentUser) { toast('로그인 후 이용 가능합니다'); return; }
+  document.getElementById('rcBg').style.display = 'flex';
+  rcShowPanel('waiting');
+  rcSetStatus('대기중');
+};
+
+// 랜덤채팅 모달 닫기 (채팅 중이면 종료 처리)
+window.closeRandomChat = async () => {
+  if (rcRoomId) await endRandomChat(true);
+  document.getElementById('rcBg').style.display = 'none';
+};
+
+// 상대방 찾기 시작
+window.startRandomChat = async () => {
+  if (!currentUser) return;
+  document.getElementById('rcStartBtn').style.display = 'none';
+  document.getElementById('rcSearchingMsg').style.display = 'block';
+  rcSetStatus('매칭중');
+
+  // 점 애니메이션
+  let dots = 0;
+  rcDotsInterval = setInterval(() => {
+    dots = (dots + 1) % 4;
+    document.getElementById('rcDots').textContent = '상대방을 찾는 중' + '.'.repeat(dots);
+  }, 500);
+
+  await rcMatchOrCreate();
+};
+
+async function rcMatchOrCreate() {
+  try {
+    // 대기 중인 방(userB 없음) 중 내가 만든 것 아닌 것 찾기
+    const q = query(
+      collection(db, 'rc_rooms'),
+      where('status', '==', 'waiting'),
+      limit(5)
+    );
+    const snap = await getDocs(q);
+    let joined = false;
+
+    for (const roomDoc of snap.docs) {
+      const data = roomDoc.data();
+      if (data.userA === currentUser.uid) continue; // 내가 만든 방 스킵
+
+      // 방에 참가
+      try {
+        await updateDoc(doc(db, 'rc_rooms', roomDoc.id), {
+          userB: currentUser.uid,
+          userBId: getRcMyId(),
+          status: 'active',
+          startedAt: serverTimestamp()
+        });
+        rcRoomId = roomDoc.id;
+        rcMyRole = 'B';
+        joined = true;
+        clearInterval(rcDotsInterval);
+        rcEnterChat(data.userAId || data.userA.slice(0, 8));
+        rcSubscribeRoom();
+        rcSubscribeMsgs();
+        break;
+      } catch(e) { /* 동시 경쟁 실패 시 다음으로 */ }
+    }
+
+    if (!joined) {
+      // 대기방 생성
+      const ref = await addDoc(collection(db, 'rc_rooms'), {
+        userA: currentUser.uid,
+        userAId: getRcMyId(),
+        userB: null,
+        status: 'waiting',
+        createdAt: serverTimestamp()
+      });
+      rcRoomId = ref.id;
+      rcMyRole = 'A';
+      // 상대방이 들어올 때까지 폴링
+      rcSearchInterval = setInterval(rcPollForMatch, 2000);
+    }
+  } catch(e) {
+    clearInterval(rcDotsInterval);
+    toast('매칭 오류: ' + e.message);
+    rcResetSearchUI();
+  }
+}
+
+async function rcPollForMatch() {
+  if (!rcRoomId) { clearInterval(rcSearchInterval); return; }
+  try {
+    const snap = await getDoc(doc(db, 'rc_rooms', rcRoomId));
+    if (!snap.exists()) { clearInterval(rcSearchInterval); return; }
+    const data = snap.data();
+    if (data.status === 'active' && data.userB) {
+      clearInterval(rcSearchInterval);
+      clearInterval(rcDotsInterval);
+      rcEnterChat(data.userBId || data.userB.slice(0, 8));
+      rcSubscribeRoom();
+      rcSubscribeMsgs();
+    }
+  } catch(e) {}
+}
+
+function rcEnterChat(partnerDisplayId) {
+  document.getElementById('rcPartnerNick').textContent = partnerDisplayId;
+  document.getElementById('rcMsgList').innerHTML = '';
+  rcShowPanel('chat');
+  rcSetStatus('채팅중');
+}
+
+function rcSubscribeRoom() {
+  if (rcUnsubscribeRoom) rcUnsubscribeRoom();
+  rcUnsubscribeRoom = onSnapshot(doc(db, 'rc_rooms', rcRoomId), (snap) => {
+    if (!snap.exists()) { rcHandleRoomGone(); return; }
+    const data = snap.data();
+    if (data.status === 'ended') rcHandleRoomGone();
+  });
+}
+
+function rcSubscribeMsgs() {
+  if (rcUnsubscribeMsgs) rcUnsubscribeMsgs();
+  const q = query(collection(db, 'rc_rooms', rcRoomId, 'messages'), orderBy('time', 'asc'));
+  rcUnsubscribeMsgs = onSnapshot(q, (snap) => {
+    const list = document.getElementById('rcMsgList');
+    list.innerHTML = '';
+    snap.docs.forEach(d => {
+      const data = d.data();
+      const isMe = data.uid === currentUser.uid;
+      list.appendChild(rcBuildMsgEl(data, isMe));
+    });
+    list.scrollTop = list.scrollHeight;
+  });
+}
+
+function rcBuildMsgEl(data, isMe) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `display:flex; flex-direction:column; align-items:${isMe?'flex-end':'flex-start'}; gap:2px;`;
+
+  const label = document.createElement('div');
+  label.style.cssText = 'font-size:10px; color:#aaa; padding:0 4px;';
+  label.textContent = isMe ? '나' : (data.senderDisplayId || '상대방');
+  wrap.appendChild(label);
+
+  if (data.mediaUrl) {
+    const mediaWrap = document.createElement('div');
+    mediaWrap.style.cssText = `max-width:220px; border-radius:8px; overflow:hidden; border:1px solid #ddd; cursor:pointer; background:${isMe?'#1a5276':'#f0f0f0'};`;
+    if (data.mediaType === 'video') {
+      const vid = document.createElement('video');
+      vid.src = data.mediaUrl;
+      vid.controls = true;
+      vid.style.cssText = 'max-width:220px; max-height:200px; display:block;';
+      mediaWrap.appendChild(vid);
+    } else {
+      const img = document.createElement('img');
+      img.src = data.mediaUrl;
+      img.style.cssText = 'max-width:220px; max-height:200px; display:block; object-fit:cover;';
+      img.onclick = () => { document.getElementById('lbImg').src = data.mediaUrl; document.getElementById('lb').classList.add('open'); };
+      mediaWrap.appendChild(img);
+    }
+    wrap.appendChild(mediaWrap);
+  }
+
+  if (data.text && data.text.trim()) {
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `max-width:260px; padding:8px 12px; border-radius:${isMe?'12px 4px 12px 12px':'4px 12px 12px 12px'}; font-size:13px; line-height:1.5; word-break:break-word; background:${isMe?'#1a5276':'#f0f0f0'}; color:${isMe?'#fff':'#222'};`;
+    bubble.textContent = data.text;
+    wrap.appendChild(bubble);
+  }
+
+  const timeEl = document.createElement('div');
+  timeEl.style.cssText = 'font-size:10px; color:#bbb; padding:0 4px;';
+  if (data.time) {
+    const t = data.time.toDate ? data.time.toDate() : new Date(data.time.seconds * 1000);
+    timeEl.textContent = t.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+  }
+  wrap.appendChild(timeEl);
+  return wrap;
+}
+
+// 파일 선택
+window.onRcFileSelect = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 50 * 1024 * 1024) { toast('파일 크기는 50MB 이하여야 합니다'); e.target.value=''; return; }
+
+  rcPendingFile = file;
+  const isVideo = file.type.startsWith('video/');
+  const url = URL.createObjectURL(file);
+
+  document.getElementById('rcMediaPreview').style.display = 'block';
+  document.getElementById('rcMediaName').textContent = file.name;
+
+  if (isVideo) {
+    document.getElementById('rcImgThumb').style.display = 'none';
+    document.getElementById('rcVidThumb').style.display = 'block';
+    document.getElementById('rcVidIcon').style.display = 'flex';
+    document.getElementById('rcVidThumb').src = url;
+  } else {
+    document.getElementById('rcVidThumb').style.display = 'none';
+    document.getElementById('rcVidIcon').style.display = 'none';
+    document.getElementById('rcImgThumb').style.display = 'block';
+    document.getElementById('rcImgThumb').src = url;
+  }
+  e.target.value = '';
+};
+
+window.clearRcMedia = () => {
+  rcPendingFile = null;
+  document.getElementById('rcMediaPreview').style.display = 'none';
+  document.getElementById('rcImgThumb').style.display = 'none';
+  document.getElementById('rcVidThumb').style.display = 'none';
+  document.getElementById('rcVidIcon').style.display = 'none';
+};
+
+// Cloudinary 업로드 (기존 함수와 동일 방식)
+async function rcUploadMedia(file) {
+  const isVideo = file.type.startsWith('video/');
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  if (isVideo) fd.append('resource_type', 'video');
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${isVideo?'video':'image'}/upload`, { method:'POST', body:fd });
+  const data = await res.json();
+  if (!data.secure_url) throw new Error('업로드 실패');
+  return { url: data.secure_url, type: isVideo ? 'video' : 'image' };
+}
+
+// 메시지 전송
+window.sendRcMsg = async () => {
+  if (!rcRoomId || !currentUser) return;
+  const input = document.getElementById('rcMsgInput');
+  const text = input.value.trim();
+  const hasFile = !!rcPendingFile;
+  if (!text && !hasFile) return;
+
+  const sendBtn = document.querySelector('#rcChatArea button[onclick="sendRcMsg()"]');
+  if (sendBtn) sendBtn.disabled = true;
+  input.disabled = true;
+
+  try {
+    let mediaUrl = null, mediaType = null;
+    if (hasFile) {
+      toast('미디어 업로드 중...');
+      const result = await rcUploadMedia(rcPendingFile);
+      mediaUrl = result.url;
+      mediaType = result.type;
+      clearRcMedia();
+    }
+
+    const msgData = {
+      uid: currentUser.uid,
+      senderDisplayId: getRcMyId(),
+      text: text || '',
+      time: serverTimestamp()
+    };
+    if (mediaUrl) { msgData.mediaUrl = mediaUrl; msgData.mediaType = mediaType; }
+
+    await addDoc(collection(db, 'rc_rooms', rcRoomId, 'messages'), msgData);
+    input.value = '';
+  } catch(e) {
+    toast('전송 실패: ' + e.message);
+  }
+
+  if (sendBtn) sendBtn.disabled = false;
+  input.disabled = false;
+  input.focus();
+};
+
+// 채팅 종료 (내가)
+window.endRandomChat = async (silent = false) => {
+  clearInterval(rcSearchInterval);
+  clearInterval(rcDotsInterval);
+
+  if (rcUnsubscribeRoom) { rcUnsubscribeRoom(); rcUnsubscribeRoom = null; }
+  if (rcUnsubscribeMsgs) { rcUnsubscribeMsgs(); rcUnsubscribeMsgs = null; }
+
+  if (rcRoomId) {
+    try {
+      // 방 상태를 ended 로 변경 → 상대방에게도 알림
+      await updateDoc(doc(db, 'rc_rooms', rcRoomId), { status: 'ended', endedAt: serverTimestamp() });
+      // 메시지 삭제 (서브컬렉션)
+      await rcDeleteRoomData(rcRoomId);
+    } catch(e) {}
+    rcRoomId = null; rcMyRole = null;
+  }
+
+  if (!silent) {
+    rcShowPanel('ended');
+    rcSetStatus('종료');
+  }
+};
+
+async function rcDeleteRoomData(roomId) {
+  try {
+    // 메시지 서브컬렉션 삭제
+    const msgsSnap = await getDocs(collection(db, 'rc_rooms', roomId, 'messages'));
+    const batch = writeBatch(db);
+    msgsSnap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    // 방 문서 삭제
+    await deleteDoc(doc(db, 'rc_rooms', roomId));
+  } catch(e) {}
+}
+
+// 상대방이 종료했을 때
+function rcHandleRoomGone() {
+  clearInterval(rcSearchInterval);
+  clearInterval(rcDotsInterval);
+  if (rcUnsubscribeRoom) { rcUnsubscribeRoom(); rcUnsubscribeRoom = null; }
+  if (rcUnsubscribeMsgs) { rcUnsubscribeMsgs(); rcUnsubscribeMsgs = null; }
+  rcRoomId = null; rcMyRole = null;
+  rcShowPanel('ended');
+  rcSetStatus('종료');
+  toast('상대방이 채팅을 종료했습니다');
+}
+
+// 다시 찾기
+window.resetRandomChat = () => {
+  rcResetSearchUI();
+  rcShowPanel('waiting');
+  rcSetStatus('대기중');
+};
+
+function rcResetSearchUI() {
+  document.getElementById('rcStartBtn').style.display = 'inline-block';
+  document.getElementById('rcSearchingMsg').style.display = 'none';
+  document.getElementById('rcMsgList').innerHTML = '';
+  clearRcMedia();
+}
+
+function rcShowPanel(which) {
+  document.getElementById('rcWaiting').style.display  = which === 'waiting' ? 'flex' : 'none';
+  document.getElementById('rcChatArea').style.display = which === 'chat'    ? 'flex' : 'none';
+  document.getElementById('rcEndedArea').style.display = which === 'ended'  ? 'flex' : 'none';
+}
+
+function rcSetStatus(text) {
+  document.getElementById('rcStatusBadge').textContent = text;
+}
 </script>
 
 <!-- NICKNAME CHANGE MODAL -->
@@ -1764,6 +2122,83 @@ setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 100);
       <button onclick="submitNickChange()" id="nickSubmitBtn" style="width:100%; padding:10px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:2px; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px;">변경하기</button>
       <div id="nickErrMsg" style="text-align:center; font-size:11px; color:#c0392b; margin-top:8px; min-height:16px;"></div>
     </div>
+  </div>
+</div>
+
+<!-- ===== RANDOM CHAT MODAL ===== -->
+<div id="rcBg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:8000; align-items:center; justify-content:center;">
+  <div id="rcBox" style="background:#fff; width:100%; max-width:480px; height:600px; display:flex; flex-direction:column; border-top:3px solid #1a5276; box-shadow:0 6px 30px rgba(0,0,0,0.3); border-radius:2px; overflow:hidden; margin:10px;">
+
+    <!-- 헤더 -->
+    <div style="background:#1a5276; color:#fff; padding:11px 14px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:1px;">💬 랜덤채팅</div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span id="rcStatusBadge" style="font-size:11px; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">대기중</span>
+        <button onclick="closeRandomChat()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
+      </div>
+    </div>
+
+    <!-- 대기 화면 -->
+    <div id="rcWaiting" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+      <div style="font-size:48px; margin-bottom:16px;">🎲</div>
+      <div style="font-size:15px; font-weight:700; color:#1a3a5c; margin-bottom:8px;">랜덤으로 상대방을 찾아드려요</div>
+      <div style="font-size:12px; color:#888; line-height:1.8; margin-bottom:24px;">
+        · 채팅 종료 시 모든 대화 내용이 삭제됩니다<br>
+        · 상대방 아이디만 표시됩니다<br>
+        · 이미지 및 동영상 첨부 가능 (최대 50MB)<br>
+        · 불건전한 채팅은 이용이 제한될 수 있습니다
+      </div>
+      <button id="rcStartBtn" onclick="startRandomChat()" style="padding:10px 36px; background:#1a5276; color:#fff; border:none; font-size:14px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px;">상대방 찾기</button>
+      <div id="rcSearchingMsg" style="display:none; margin-top:16px; font-size:13px; color:#888;">
+        <span id="rcDots">상대방을 찾는 중</span>
+      </div>
+    </div>
+
+    <!-- 채팅 화면 -->
+    <div id="rcChatArea" style="flex:1; display:none; flex-direction:column; overflow:hidden;">
+      <!-- 파트너 정보 바 -->
+      <div style="background:#f0f6fc; border-bottom:1px solid #dde; padding:8px 14px; font-size:12px; color:#1a3a5c; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <span>상대방: <strong id="rcPartnerNick" style="color:#1a5276;">-</strong></span>
+        <button onclick="endRandomChat()" style="padding:3px 12px; background:#c0392b; color:#fff; border:none; font-size:11px; font-weight:700; cursor:pointer; border-radius:3px; font-family:'Noto Sans KR',sans-serif;">채팅 종료</button>
+      </div>
+
+      <!-- 메시지 목록 -->
+      <div id="rcMsgList" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+
+      <!-- 입력 영역 -->
+      <div style="border-top:1px solid #eee; padding:10px; flex-shrink:0;">
+        <!-- 미디어 미리보기 -->
+        <div id="rcMediaPreview" style="display:none; margin-bottom:8px; position:relative;">
+          <div id="rcMediaThumb" style="max-width:120px; max-height:100px; overflow:hidden; border:1px solid #ddd; border-radius:4px; position:relative; display:inline-block;">
+            <img id="rcImgThumb" style="display:none; width:120px; height:80px; object-fit:cover;">
+            <video id="rcVidThumb" style="display:none; width:120px; height:80px; object-fit:cover;" muted></video>
+            <div id="rcVidIcon" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px;">▶</div>
+          </div>
+          <button onclick="clearRcMedia()" style="position:absolute; top:-6px; left:114px; background:#c0392b; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+          <div id="rcMediaName" style="font-size:10px; color:#888; margin-top:3px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <!-- 파일 첨부 버튼 -->
+          <label style="cursor:pointer; flex-shrink:0; padding:6px 8px; background:#f0f0f0; border:1px solid #ccc; border-radius:4px; font-size:14px; line-height:1; display:flex; align-items:center; gap:2px; color:#555;" title="이미지/동영상 첨부">
+            📎
+            <input type="file" id="rcFileInput" accept="image/*,video/*" style="display:none;" onchange="onRcFileSelect(event)">
+          </label>
+          <input id="rcMsgInput" type="text" placeholder="메시지를 입력하세요..." maxlength="300"
+            style="flex:1; padding:7px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:4px; outline:none;"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendRcMsg();}">
+          <button onclick="sendRcMsg()" style="padding:7px 16px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif; flex-shrink:0;">전송</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 종료 화면 -->
+    <div id="rcEndedArea" style="flex:1; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+      <div style="font-size:48px; margin-bottom:16px;">👋</div>
+      <div style="font-size:15px; font-weight:700; color:#333; margin-bottom:8px;">채팅이 종료되었습니다</div>
+      <div style="font-size:12px; color:#888; margin-bottom:24px;">대화 내용은 모두 삭제됩니다.</div>
+      <button onclick="resetRandomChat()" style="padding:9px 28px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif;">다시 찾기</button>
+    </div>
+
   </div>
 </div>
 
