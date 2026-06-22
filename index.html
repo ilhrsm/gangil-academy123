@@ -162,7 +162,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 
 /* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 500; align-items: flex-start; justify-content: center; padding-top: 40px; overflow-y: auto; }
-#gameBg { z-index: 6000; }
+#gameBg { z-index: 7000; }
 .modal-bg.open { display: flex; }
 .modal-box { background: #fff; width: 100%; max-width: 720px; border: 1px solid #ccc; border-top: 3px solid #1a5276; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: slideDown 0.2s ease; margin-bottom: 40px; }
 @keyframes slideDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
@@ -262,7 +262,7 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .point-badge { display: inline-block; background: #1a3a5c; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; letter-spacing: 0.5px; }
 
 /* ===== POST WARNING MODAL ===== */
-#postWarnOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 8000; align-items: center; justify-content: center; padding: 20px; }
+#postWarnOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 8500; align-items: center; justify-content: center; padding: 20px; }
 #postWarnOverlay.open { display: flex; }
 .warn-box { background: #fff; border-top: 3px solid #c0392b; max-width: 400px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.3); text-align: center; padding: 30px 24px; }
 .warn-icon { font-size: 36px; margin-bottom: 12px; }
@@ -452,10 +452,52 @@ body.board-big .card-likes { color: #e57373; }
 .confetti-piece { position: fixed; width: 9px; height: 9px; top: -10px; z-index: 9999; pointer-events: none; border-radius: 2px; animation: confettiFall linear forwards; }
 @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
+/* ===== MOBILE TAB BAR ===== */
+.mobile-tab-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #1a3a5c; border-top: 2px solid #1a5276;
+  z-index: 7000; height: 54px;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+}
+.mobile-tab-bar a {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 2px; color: #aac; font-size: 10px;
+  cursor: pointer; padding: 4px 0; border: none; background: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-tab-bar a:active { background: rgba(255,255,255,0.08); }
+.mobile-tab-bar a .mtb-icon { font-size: 18px; line-height: 1; }
+.mobile-tab-bar a.active { color: #fff; }
+
 @media (max-width: 780px) {
   .sidebar { display: none; }
   .td-views, .td-date, .td-likes { display: none; }
   .gnb { display: none; }
+  /* 하단 탭바 표시 */
+  .mobile-tab-bar { display: grid; }
+  /* 하단 탭바 공간 확보 */
+  body { padding-bottom: 54px; }
+  /* 게임 버튼 모바일에서도 보이도록 */
+  .game-entry-btn-wrap { display: block !important; }
+  /* 모달 모바일 최적화 */
+  .modal-bg { padding-top: 0; align-items: flex-end; }
+  .modal-box { margin-bottom: 54px; max-height: calc(100vh - 54px); overflow-y: auto; }
+  .detail-box { max-height: calc(100vh - 54px); overflow-y: auto; }
+  /* 포인트 게임 모달 모바일 */
+  #gameBg { align-items: center; padding: 8px; }
+  .game-modal-box { width: 100% !important; max-width: 100% !important; margin: 0 !important; max-height: calc(100vh - 70px); overflow-y: auto; }
+  /* 랜덤채팅 모달 모바일 */
+  #rcBg { align-items: flex-end !important; padding: 0 !important; }
+  #rcBox { max-width: 100% !important; width: 100% !important; height: calc(100vh - 54px) !important; margin: 0 !important; border-radius: 12px 12px 0 0 !important; }
+  /* 룰렛 캔버스 크기 조정 */
+  .roulette-canvas { width: 220px !important; height: 220px !important; }
+  /* 게시판 경로 숨김 */
+  .board-path { display: none; }
+  /* 상단바 compact */
+  .top-bar-inner { flex-wrap: wrap; gap: 4px; }
 }
 </style>
 </head>
@@ -608,7 +650,7 @@ body.board-big .card-likes { color: #e57373; }
 <!-- POINT GAME MODAL -->
 <div class="modal-bg" id="gameBg">
   <div class="modal-box game-modal-box">
-    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">포인트 게임 <button class="modal-close-btn" onclick="document.getElementById('gameBg').classList.remove('open')">✕</button></div>
+    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">포인트 게임 <button class="modal-close-btn" onclick="document.getElementById('gameBg').classList.remove('open'); document.body.style.overflow='';">✕</button></div>
     <div class="game-inner">
       <div class="game-my-pts">내 포인트: <strong id="gamePtsDisplay">0P</strong></div>
 
@@ -1471,7 +1513,24 @@ window.goBoard('all');
 // ===== GAME MODAL =====
 window.openGameModal = () => {
   document.getElementById('gameBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 50);
+};
+
+// gameBg 닫기 버튼도 overflow 복구
+document.addEventListener('DOMContentLoaded', () => {
+  const gameBgCloseBtn = document.querySelector('#gameBg .modal-close-btn');
+  if (gameBgCloseBtn) {
+    gameBgCloseBtn.addEventListener('click', () => {
+      document.getElementById('gameBg').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+});
+
+window.setMobileTab = (el) => {
+  document.querySelectorAll('.mobile-tab-bar a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
 };
 
 // ===== ROULETTE GAME =====
@@ -1761,6 +1820,7 @@ function getRcMyId() {
 window.openRandomChat = () => {
   if (!currentUser) { toast('로그인 후 이용 가능합니다'); return; }
   document.getElementById('rcBg').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
   rcShowPanel('waiting');
   rcSetStatus('대기중');
 };
@@ -1769,6 +1829,7 @@ window.openRandomChat = () => {
 window.closeRandomChat = async () => {
   if (rcRoomId) await endRandomChat(true);
   document.getElementById('rcBg').style.display = 'none';
+  document.body.style.overflow = '';
 };
 
 // 상대방 찾기 시작
@@ -2034,9 +2095,7 @@ window.endRandomChat = async (silent = false) => {
 
   if (rcRoomId) {
     try {
-      // 방 상태를 ended 로 변경 → 상대방에게도 알림
       await updateDoc(doc(db, 'rc_rooms', rcRoomId), { status: 'ended', endedAt: serverTimestamp() });
-      // 메시지 삭제 (서브컬렉션)
       await rcDeleteRoomData(rcRoomId);
     } catch(e) {}
     rcRoomId = null; rcMyRole = null;
@@ -2045,6 +2104,8 @@ window.endRandomChat = async (silent = false) => {
   if (!silent) {
     rcShowPanel('ended');
     rcSetStatus('종료');
+  } else {
+    document.body.style.overflow = '';
   }
 };
 
@@ -2126,7 +2187,7 @@ function rcSetStatus(text) {
 </div>
 
 <!-- ===== RANDOM CHAT MODAL ===== -->
-<div id="rcBg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:8000; align-items:center; justify-content:center;">
+<div id="rcBg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:7500; align-items:center; justify-content:center;">
   <div id="rcBox" style="background:#fff; width:100%; max-width:480px; height:600px; display:flex; flex-direction:column; border-top:3px solid #1a5276; box-shadow:0 6px 30px rgba(0,0,0,0.3); border-radius:2px; overflow:hidden; margin:10px;">
 
     <!-- 헤더 -->
@@ -2213,5 +2274,20 @@ function rcSetStatus(text) {
     <div style="text-align:center; font-size:11px; color:#aaa; cursor:pointer;" onclick="closeEmailModal()">닫기</div>
   </div>
 </div>
+<!-- MOBILE BOTTOM TAB BAR -->
+<nav class="mobile-tab-bar" id="mobileTabBar">
+  <a onclick="goBoard('all'); setMobileTab(this);" class="active">
+    <span class="mtb-icon">🏠</span>전체글
+  </a>
+  <a onclick="goBoard('free'); setMobileTab(this);">
+    <span class="mtb-icon">📋</span>자유게시판
+  </a>
+  <a onclick="openRandomChat(); setMobileTab(this);">
+    <span class="mtb-icon">💬</span>랜덤채팅
+  </a>
+  <a onclick="openGameModal(); setMobileTab(this);">
+    <span class="mtb-icon">🎲</span>포인트게임
+  </a>
+</nav>
 </body>
 </html>
