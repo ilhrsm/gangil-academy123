@@ -448,6 +448,17 @@ body.board-big .card-likes { color: #e57373; }
 .game-result.idle { background: #f7f7f7; color: #999; border: 1px solid #e0e0e0; font-weight: 400; }
 .game-limit-warn { font-size: 11px; color: #c0392b; text-align: center; }
 
+/* ===== POINT TRANSFER ===== */
+.pt-transfer-section { border-top: 2px solid #e8e8e8; margin-top: 18px; padding-top: 16px; }
+.pt-transfer-title { font-size: 12px; font-weight: 700; color: #333; letter-spacing: 1px; margin-bottom: 12px; text-align: center; }
+.pt-transfer-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.pt-transfer-row select { flex: 1; min-width: 110px; max-width: 160px; padding: 7px 8px; border: 1px solid #ccc; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border-radius: 3px; background: #fff; }
+.pt-transfer-row input { width: 90px; padding: 7px 8px; border: 1px solid #ccc; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border-radius: 3px; text-align: center; }
+.pt-send-btn { padding: 7px 18px; background: #1e7e34; color: #fff; border: none; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; transition: background 0.15s; white-space: nowrap; }
+.pt-send-btn:hover { background: #155724; }
+.pt-send-btn:disabled { background: #aaa; cursor: not-allowed; }
+.pt-transfer-msg { font-size: 11px; text-align: center; margin-top: 8px; min-height: 16px; font-weight: 600; }
+
 /* ===== CONFETTI ===== */
 .confetti-piece { position: fixed; width: 9px; height: 9px; top: -10px; z-index: 9999; pointer-events: none; border-radius: 2px; animation: confettiFall linear forwards; }
 @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
@@ -523,14 +534,14 @@ body.board-big .card-likes { color: #e57373; }
 
 <!-- TOP BAR -->
 <div id="anonInfoBanner" style="display:none; background:#1a5276; color:#e8f4fc; font-size:11px; text-align:center; padding:5px 10px; letter-spacing:0.3px; transition: opacity 0.5s;">
-  💡 익명로그인은 이메일로 로그인 → 익명아이디+gmail.com → 비밀번호 설정 가능합니다
+  익명로그인은 이메일로 로그인 → 익명아이디+gmail.com → 비밀번호 설정 가능합니다
 </div>
 <div class="top-bar">
   <div class="top-bar-inner">
     <div class="top-bar-left">
       <a onclick="goBoard('all')">강일 네트워크</a>
       <a onclick="goBoard('free')">자유게시판</a>
-      <a onclick="openNickModal()" id="nickChangeLink" style="display:none; color:#f0c040; font-weight:600; letter-spacing:0.5px;">✏ 닉네임 변경</a>
+      <a onclick="openNickModal()" id="nickChangeLink" style="display:none; color:#f0c040; font-weight:600; letter-spacing:0.5px;">닉네임 변경</a>
     </div>
     <div class="top-bar-right">
       <div class="user-area" id="userArea">
@@ -562,7 +573,7 @@ body.board-big .card-likes { color: #e57373; }
       <div class="gnb-item active" id="gnb-all"><a onclick="goBoard('all')">전체글</a></div>
       <div class="gnb-item" id="gnb-notice"><a onclick="goBoard('notice')">공지사항</a></div>
       <div class="gnb-item" id="gnb-free"><a onclick="goBoard('free')">자유게시판</a></div>
-      <div class="gnb-item" id="gnb-random"><a onclick="openRandomChat()">💬 랜덤채팅</a></div>
+      <div class="gnb-item" id="gnb-random"><a onclick="openRandomChat()">랜덤채팅</a></div>
     </nav>
   </div>
 </div>
@@ -684,6 +695,19 @@ body.board-big .card-likes { color: #e57373; }
       <button class="spin-btn" id="spinBtn" onclick="doSpin()">돌리기</button>
       <div class="game-result idle" id="gameResult">베팅 포인트를 설정하고 돌려보세요.</div>
       <div class="game-limit-warn" id="gameLimitWarn" style="display:none;">오늘의 게임 한도에 도달했습니다.</div>
+
+      <!-- 포인트 전송 -->
+      <div class="pt-transfer-section">
+        <div class="pt-transfer-title">포인트 선물하기</div>
+        <div class="pt-transfer-row">
+          <select id="ptTargetSelect">
+            <option value="">받을 사람 선택</option>
+          </select>
+          <input id="ptSendAmount" type="number" min="1" placeholder="P 입력">
+          <button class="pt-send-btn" id="ptSendBtn" onclick="sendPointToUser()">보내기</button>
+        </div>
+        <div class="pt-transfer-msg" id="ptTransferMsg"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -691,7 +715,7 @@ body.board-big .card-likes { color: #e57373; }
 <!-- POST WARNING MODAL -->
 <div id="postWarnOverlay">
   <div class="warn-box">
-    <div class="warn-icon">⚠️</div>
+    
     <div class="warn-title">포인트 악용 금지 안내</div>
     <div class="warn-text">
       포인트를 얻기 위해 <strong>글·댓글을 연속적으로 무의미하게 작성</strong>할 시<br>
@@ -725,7 +749,7 @@ body.board-big .card-likes { color: #e57373; }
           <div class="upload-area" id="uploadArea">
             <input type="file" id="imgInput" accept="image/*" multiple onchange="onImgSelect(event)" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;">
             <p><strong>클릭</strong>하거나 드래그하여 업로드 (최대 5장 · 장당 5MB 이하)</p>
-            <p style="margin-top:6px;font-size:11px;color:#aaa;">📱 모바일: 탭하여 사진 선택</p>
+            <p style="margin-top:6px;font-size:11px;color:#aaa;">모바일: 탭하여 사진 선택</p>
           </div>
           <div class="upload-notice" id="uploadNotice"></div>
           <div class="img-preview-row" id="imgPreview"></div>
@@ -1102,7 +1126,7 @@ function showLockedBoard(name, required) {
   tbl.style.background = 'transparent';
   tb.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;">
     <div class="locked-overlay">
-      <div class="locked-icon">🔒</div>
+      <div class="locked-icon">LOCK</div>
       <div class="locked-title">${name} 게시판</div>
       <div class="locked-pts">${required.toLocaleString()}P 이상 필요</div>
       <div class="locked-sub">현재 내 포인트: <strong>${myPts.toLocaleString()}P</strong><br>
@@ -1515,6 +1539,70 @@ window.openGameModal = () => {
   document.getElementById('gameBg').classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 50);
+  loadPtUserList();
+};
+
+// 포인트 전송 - 유저 목록 로드
+async function loadPtUserList() {
+  if (!currentUser) return;
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    const sel = document.getElementById('ptTargetSelect');
+    sel.innerHTML = '<option value="">받을 사람 선택</option>';
+    snap.docs.forEach(d => {
+      if (d.id === currentUser.uid) return; // 자기 자신 제외
+      const data = d.data();
+      if (!data.name) return;
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = `${data.name} (${(data.points || 0).toLocaleString()}P)`;
+      sel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+// 포인트 전송 실행
+window.sendPointToUser = async () => {
+  if (!currentUser) { toast('로그인이 필요합니다'); return; }
+  const targetUid = document.getElementById('ptTargetSelect').value;
+  const amount = parseInt(document.getElementById('ptSendAmount').value);
+  const msgEl = document.getElementById('ptTransferMsg');
+
+  msgEl.style.color = '#c0392b';
+  if (!targetUid) { msgEl.textContent = '받을 사람을 선택해주세요.'; return; }
+  if (!amount || amount < 1) { msgEl.textContent = '보낼 포인트를 입력해주세요.'; return; }
+
+  // 내 포인트 확인
+  const mySnap = await getDoc(doc(db, 'users', currentUser.uid));
+  const myPts = mySnap.data()?.points || 0;
+  if (myPts < amount) { msgEl.textContent = `포인트가 부족합니다. (현재 ${myPts.toLocaleString()}P)`; return; }
+
+  const btn = document.getElementById('ptSendBtn');
+  btn.disabled = true;
+  msgEl.style.color = '#888';
+  msgEl.textContent = '전송 중...';
+
+  try {
+    // 배치로 원자적 처리
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'users', currentUser.uid), { points: increment(-amount) });
+    batch.update(doc(db, 'users', targetUid), { points: increment(amount) });
+    await batch.commit();
+
+    // 받은 사람 이름 가져오기
+    const targetSnap = await getDoc(doc(db, 'users', targetUid));
+    const targetName = targetSnap.data()?.name || '상대방';
+
+    msgEl.style.color = '#1e7e34';
+    msgEl.textContent = `${targetName}에게 ${amount.toLocaleString()}P 전송 완료!`;
+    document.getElementById('ptSendAmount').value = '';
+    updateGameDisplay();
+    await loadPtUserList(); // 목록 포인트 새로고침
+  } catch(e) {
+    msgEl.style.color = '#c0392b';
+    msgEl.textContent = '전송 실패: ' + e.message;
+  }
+  btn.disabled = false;
 };
 
 // gameBg 닫기 버튼도 overflow 복구
@@ -1780,7 +1868,7 @@ async function finishSpin(didWin, bet, prize) {
     playWinSound();
     launchConfetti();
     resultEl.className = 'game-result win';
-    resultEl.textContent = `🎉 승리! +${netGain.toLocaleString()}P 획득! (총 ${myPoints.toLocaleString()}P)`;
+    resultEl.textContent = `승리! +${netGain.toLocaleString()}P 획득! (총 ${myPoints.toLocaleString()}P)`;
     updateGameDisplay();
     if (gameSessionWin >= GAME_MAX_WIN) {
       document.getElementById('gameLimitWarn').style.display = 'block';
@@ -1790,7 +1878,7 @@ async function finishSpin(didWin, bet, prize) {
     await addPoints(currentUser.uid, -bet);
     playLoseSound();
     resultEl.className = 'game-result lose';
-    resultEl.textContent = `😭 꽝! -${bet.toLocaleString()}P (총 ${myPoints.toLocaleString()}P)`;
+    resultEl.textContent = `꽝! -${bet.toLocaleString()}P (총 ${myPoints.toLocaleString()}P)`;
     updateGameDisplay();
   }
 }
@@ -2162,7 +2250,7 @@ function rcSetStatus(text) {
 <div id="nickModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9000; align-items:center; justify-content:center;">
   <div style="background:#fff; width:340px; padding:0; border-top:3px solid #1a5276; box-shadow:0 4px 24px rgba(0,0,0,0.25); border-radius:2px; overflow:hidden;">
     <div style="background:#1a5276; color:#fff; padding:11px 16px; font-size:13px; font-weight:700; letter-spacing:1px; display:flex; justify-content:space-between; align-items:center;">
-      ✏ 닉네임 변경
+      닉네임 변경
       <button onclick="closeNickModal()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
     </div>
     <div style="padding:22px 20px;">
@@ -2192,7 +2280,7 @@ function rcSetStatus(text) {
 
     <!-- 헤더 -->
     <div style="background:#1a5276; color:#fff; padding:11px 14px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
-      <div style="font-size:13px; font-weight:700; letter-spacing:1px;">💬 랜덤채팅</div>
+      <div style="font-size:13px; font-weight:700; letter-spacing:1px;">랜덤채팅</div>
       <div style="display:flex; gap:8px; align-items:center;">
         <span id="rcStatusBadge" style="font-size:11px; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">대기중</span>
         <button onclick="closeRandomChat()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
@@ -2201,7 +2289,7 @@ function rcSetStatus(text) {
 
     <!-- 대기 화면 -->
     <div id="rcWaiting" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
-      <div style="font-size:48px; margin-bottom:16px;">🎲</div>
+      <div style="font-size:36px; font-weight:900; color:#1a5276; margin-bottom:16px; letter-spacing:2px;">RANDOM</div>
       <div style="font-size:15px; font-weight:700; color:#1a3a5c; margin-bottom:8px;">랜덤으로 상대방을 찾아드려요</div>
       <div style="font-size:12px; color:#888; line-height:1.8; margin-bottom:24px;">
         · 채팅 종료 시 모든 대화 내용이 삭제됩니다<br>
@@ -2241,7 +2329,7 @@ function rcSetStatus(text) {
         <div style="display:flex; gap:6px; align-items:center;">
           <!-- 파일 첨부 버튼 -->
           <label style="cursor:pointer; flex-shrink:0; padding:6px 8px; background:#f0f0f0; border:1px solid #ccc; border-radius:4px; font-size:14px; line-height:1; display:flex; align-items:center; gap:2px; color:#555;" title="이미지/동영상 첨부">
-            📎
+            +
             <input type="file" id="rcFileInput" accept="image/*,video/*" style="display:none;" onchange="onRcFileSelect(event)">
           </label>
           <input id="rcMsgInput" type="text" placeholder="메시지를 입력하세요..." maxlength="300"
@@ -2254,7 +2342,7 @@ function rcSetStatus(text) {
 
     <!-- 종료 화면 -->
     <div id="rcEndedArea" style="flex:1; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
-      <div style="font-size:48px; margin-bottom:16px;">👋</div>
+      <div style="font-size:32px; font-weight:900; color:#888; margin-bottom:16px;">END</div>
       <div style="font-size:15px; font-weight:700; color:#333; margin-bottom:8px;">채팅이 종료되었습니다</div>
       <div style="font-size:12px; color:#888; margin-bottom:24px;">대화 내용은 모두 삭제됩니다.</div>
       <button onclick="resetRandomChat()" style="padding:9px 28px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif;">다시 찾기</button>
@@ -2277,16 +2365,16 @@ function rcSetStatus(text) {
 <!-- MOBILE BOTTOM TAB BAR -->
 <nav class="mobile-tab-bar" id="mobileTabBar">
   <a onclick="goBoard('all'); setMobileTab(this);" class="active">
-    <span class="mtb-icon">🏠</span>전체글
+    <span class="mtb-icon">H</span>전체글
   </a>
   <a onclick="goBoard('free'); setMobileTab(this);">
-    <span class="mtb-icon">📋</span>자유게시판
+    <span class="mtb-icon">B</span>자유게시판
   </a>
   <a onclick="openRandomChat(); setMobileTab(this);">
-    <span class="mtb-icon">💬</span>랜덤채팅
+    <span class="mtb-icon">C</span>랜덤채팅
   </a>
   <a onclick="openGameModal(); setMobileTab(this);">
-    <span class="mtb-icon">🎲</span>포인트게임
+    <span class="mtb-icon">G</span>포인트게임
   </a>
 </nav>
 </body>
