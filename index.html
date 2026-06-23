@@ -56,7 +56,6 @@ a { text-decoration: none; color: inherit; cursor: pointer; }
 .top-bar-right { display: flex; gap: 8px; align-items: center; }
 .login-btn { padding: 3px 12px; background: #2471a3; color: #fff; border: none; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
 .login-btn:hover { background: #1a5276; }
-
 .logout-btn { padding: 3px 10px; background: none; color: #aaa; border: 1px solid #2a4a6a; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
 .logout-btn:hover { color: #fff; border-color: #5a8aaa; }
 .admin-btn { padding: 3px 10px; background: #4a3000; color: #c8a030; border: 1px solid #6a4800; font-size: 11px; cursor: pointer; border-radius: 2px; font-family: 'Noto Sans KR', sans-serif; }
@@ -418,7 +417,27 @@ body.board-big .card-likes { color: #e57373; }
 .game-entry-btn { width: 100%; padding: 11px 0; background: #1a3a5c; color: #fff; border: none; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 1px; font-family: 'Noto Sans KR', sans-serif; transition: background 0.15s; }
 .game-entry-btn:hover { background: #14304e; }
 
-/* ===== GAME MODAL ===== */
+/* ===== GAME SELECT MODAL ===== */
+.game-select-modal { max-width: 440px; }
+.game-select-inner { padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.game-select-title { font-size: 14px; font-weight: 700; color: #1a3a5c; letter-spacing: 1px; }
+.game-select-subtitle { font-size: 11px; color: #888; margin-top: -14px; }
+.game-select-row { display: flex; gap: 16px; width: 100%; }
+.game-select-card {
+  flex: 1; border: 2px solid #c8dff0; border-radius: 10px; padding: 22px 12px 18px;
+  text-align: center; cursor: pointer; transition: all 0.18s; background: #f7fbff;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.game-select-card:hover { background: #1a3a5c; border-color: #1a3a5c; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,58,92,0.2); }
+.game-select-card:hover .gsc-name { color: #fff; }
+.game-select-card:hover .gsc-desc { color: #aac; }
+.gsc-icon { font-size: 36px; line-height: 1; }
+.gsc-name { font-size: 14px; font-weight: 700; color: #1a3a5c; }
+.gsc-desc { font-size: 11px; color: #888; line-height: 1.6; }
+.gsc-badge { display: inline-block; background: #1e8449; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-top: 2px; }
+.game-select-card:hover .gsc-badge { background: rgba(255,255,255,0.2); }
+
+/* ===== GAME MODAL (ROULETTE) ===== */
 .game-modal-box { max-width: 520px; }
 .game-inner { padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 18px; pointer-events: auto; }
 .game-my-pts { font-size: 12px; color: #555; text-align: center; }
@@ -447,6 +466,8 @@ body.board-big .card-likes { color: #e57373; }
 .game-result.lose { background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; }
 .game-result.idle { background: #f7f7f7; color: #999; border: 1px solid #e0e0e0; font-weight: 400; }
 .game-limit-warn { font-size: 11px; color: #c0392b; text-align: center; }
+.game-back-btn { padding: 5px 16px; background: #f0f0f0; color: #555; border: 1px solid #ccc; font-size: 12px; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; }
+.game-back-btn:hover { background: #e0e0e0; }
 
 /* ===== POINT TRANSFER ===== */
 .pt-transfer-section { border-top: 2px solid #e8e8e8; margin-top: 18px; padding-top: 16px; }
@@ -458,6 +479,129 @@ body.board-big .card-likes { color: #e57373; }
 .pt-send-btn:hover { background: #155724; }
 .pt-send-btn:disabled { background: #aaa; cursor: not-allowed; }
 .pt-transfer-msg { font-size: 11px; text-align: center; margin-top: 8px; min-height: 16px; font-weight: 600; }
+
+/* ===== MINES GAME MODAL ===== */
+.mines-modal-box { max-width: 540px; }
+.mines-inner { padding: 18px 16px; display: flex; flex-direction: column; align-items: center; gap: 13px; }
+.mines-my-pts { font-size: 12px; color: #555; }
+.mines-my-pts strong { color: #1a3a5c; font-size: 13px; }
+.mines-bet-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+/* 상태 바 */
+.mines-state-bar {
+  width: 100%; background: #f0f6fc; border: 1px solid #c8dff0;
+  border-radius: 6px; padding: 10px 16px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+}
+.mines-state-col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.mines-state-label { font-size: 10px; color: #888; letter-spacing: 0.5px; }
+.mines-state-val { font-size: 16px; font-weight: 900; color: #1a3a5c; }
+.mines-state-val.green { color: #1e8449; }
+.mines-state-val.red { color: #c0392b; }
+
+/* 그리드 */
+.mines-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 364px;
+}
+.mine-cell {
+  aspect-ratio: 1;
+  border: 2px solid #1a5276;
+  border-radius: 6px;
+  background: linear-gradient(145deg, #2471a3, #1a3a5c);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  transition: all 0.12s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 40px;
+}
+.mine-cell:hover:not(.revealed):not(.disabled) {
+  background: linear-gradient(145deg, #2e86c1, #2471a3);
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border-color: #5dade2;
+}
+.mine-cell.revealed-safe {
+  background: linear-gradient(145deg, #27ae60, #1e8449);
+  border-color: #2ecc71;
+  cursor: default;
+  animation: cellReveal 0.18s ease;
+}
+.mine-cell.revealed-bomb {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  border-color: #f1948a;
+  cursor: default;
+  animation: bombShake 0.35s ease;
+}
+.mine-cell.show-unrevealed-safe {
+  background: linear-gradient(145deg, #1d6a3a, #145a32);
+  border-color: #27ae60;
+  opacity: 0.6;
+  cursor: default;
+}
+.mine-cell.show-unrevealed-bomb {
+  background: linear-gradient(145deg, #922b21, #7b241c);
+  border-color: #e74c3c;
+  opacity: 0.7;
+  cursor: default;
+}
+.mine-cell.disabled { cursor: default; }
+@keyframes cellReveal {
+  from { transform: scale(0.75) rotate(-5deg); opacity: 0.5; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+@keyframes bombShake {
+  0%,100% { transform: translateX(0) rotate(0); }
+  20%      { transform: translateX(-5px) rotate(-6deg); }
+  40%      { transform: translateX(5px)  rotate(6deg); }
+  60%      { transform: translateX(-4px) rotate(-4deg); }
+  80%      { transform: translateX(4px)  rotate(4deg); }
+}
+
+/* 버튼들 */
+.mines-action-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.mines-cashout-btn {
+  padding: 10px 28px; background: linear-gradient(135deg, #27ae60, #1e8449); color: #fff;
+  border: none; font-size: 13px; font-weight: 700; cursor: pointer;
+  border-radius: 5px; font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: 1px; transition: all 0.15s; box-shadow: 0 3px 10px rgba(30,132,73,0.3);
+}
+.mines-cashout-btn:hover { background: linear-gradient(135deg, #2ecc71, #27ae60); transform: translateY(-1px); }
+.mines-cashout-btn:disabled { background: #aaa; cursor: not-allowed; box-shadow: none; transform: none; }
+.mines-start-btn {
+  padding: 10px 28px; background: linear-gradient(135deg, #2471a3, #1a3a5c); color: #fff;
+  border: none; font-size: 13px; font-weight: 700; cursor: pointer;
+  border-radius: 5px; font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: 1px; transition: all 0.15s; box-shadow: 0 3px 10px rgba(26,58,92,0.3);
+}
+.mines-start-btn:hover { background: linear-gradient(135deg, #2e86c1, #2471a3); transform: translateY(-1px); }
+.mines-result-msg {
+  font-size: 13px; font-weight: 700; padding: 10px 20px;
+  border-radius: 5px; text-align: center; min-width: 220px;
+}
+.mines-result-msg.win  { background: #e8f5e9; color: #1b5e20; border: 1px solid #81c784; }
+.mines-result-msg.lose { background: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; }
+.mines-result-msg.idle { background: #f0f6fc; color: #888; border: 1px solid #c8dff0; font-weight: 400; }
+.mines-back-btn { padding: 6px 16px; background: #f0f0f0; color: #555; border: 1px solid #ccc; font-size: 12px; cursor: pointer; border-radius: 4px; font-family: 'Noto Sans KR', sans-serif; }
+.mines-back-btn:hover { background: #e0e0e0; }
+
+/* 배율 표시 */
+.mines-mult-display {
+  font-size: 28px; font-weight: 900;
+  background: linear-gradient(135deg, #1a3a5c, #2471a3);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
+}
+.mines-mult-display.green {
+  background: linear-gradient(135deg, #1e8449, #27ae60);
+  -webkit-background-clip: text; background-clip: text;
+}
 
 /* ===== CONFETTI ===== */
 .confetti-piece { position: fixed; width: 9px; height: 9px; top: -10px; z-index: 9999; pointer-events: none; border-radius: 2px; animation: confettiFall linear forwards; }
@@ -487,28 +631,21 @@ body.board-big .card-likes { color: #e57373; }
   .sidebar { display: none; }
   .td-views, .td-date, .td-likes { display: none; }
   .gnb { display: none; }
-  /* 하단 탭바 표시 */
   .mobile-tab-bar { display: grid; }
-  /* 하단 탭바 공간 확보 */
   body { padding-bottom: 54px; }
-  /* 게임 버튼 모바일에서도 보이도록 */
   .game-entry-btn-wrap { display: block !important; }
-  /* 모달 모바일 최적화 */
   .modal-bg { padding-top: 0; align-items: flex-end; }
   .modal-box { margin-bottom: 54px; max-height: calc(100vh - 54px); overflow-y: auto; }
   .detail-box { max-height: calc(100vh - 54px); overflow-y: auto; }
-  /* 포인트 게임 모달 모바일 */
   #gameBg { align-items: center; padding: 8px; }
-  .game-modal-box { width: 100% !important; max-width: 100% !important; margin: 0 !important; max-height: calc(100vh - 70px); overflow-y: auto; }
-  /* 랜덤채팅 모달 모바일 */
+  .game-modal-box, .mines-modal-box, .game-select-modal { width: 100% !important; max-width: 100% !important; margin: 0 !important; max-height: calc(100vh - 70px); overflow-y: auto; }
   #rcBg { align-items: flex-end !important; padding: 0 !important; }
   #rcBox { max-width: 100% !important; width: 100% !important; height: calc(100vh - 54px) !important; margin: 0 !important; border-radius: 12px 12px 0 0 !important; }
-  /* 룰렛 캔버스 크기 조정 */
   .roulette-canvas { width: 220px !important; height: 220px !important; }
-  /* 게시판 경로 숨김 */
   .board-path { display: none; }
-  /* 상단바 compact */
   .top-bar-inner { flex-wrap: wrap; gap: 4px; }
+  .mines-grid { max-width: 100%; gap: 4px; }
+  .mine-cell { font-size: 14px; min-height: 34px; }
 }
 </style>
 </head>
@@ -563,7 +700,8 @@ body.board-big .card-likes { color: #e57373; }
 <div class="site-header">
   <div class="site-header-inner">
     <div class="site-logo" onclick="goBoard('all')">
-      <img src="data:image/png;base64,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" alt="강일중학교 로고" style="height:48px;width:auto;object-fit:contain;">
+      <img src="data:image/png;base64,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" alt="강일중학교 로고" style="height:48px;width:auto;object-fit:contain;display:none;">
+      <div class="logo-mark">강일</div>
       <div class="logo-text-wrap">
         <h1>강일 네트워크</h1>
         <p>GANGIL NETWORK</p>
@@ -651,17 +789,50 @@ body.board-big .card-likes { color: #e57373; }
         <li><a onclick="goBoard('free')">자유게시판 <span class="side-cnt" id="cntFree">0</span></a></li>
       </ul>
     </div>
-
     <div style="margin-top:100px;">
-      <button class="game-entry-btn" onclick="openGameModal()">포인트 게임</button>
+      <button class="game-entry-btn" onclick="openGameSelect()">포인트 게임</button>
     </div>
   </div>
 </div>
 
-<!-- POINT GAME MODAL -->
-<div class="modal-bg" id="gameBg">
+<!-- ===== GAME SELECT MODAL ===== -->
+<div class="modal-bg" id="gameSelectBg" style="z-index:7000;">
+  <div class="modal-box game-select-modal">
+    <div class="modal-title-bar" style="background:#1a3a5c;">
+      포인트 게임 선택
+      <button class="modal-close-btn" onclick="closeGameSelect()">✕</button>
+    </div>
+    <div class="game-select-inner">
+      <div class="game-select-title">어떤 게임을 즐기실 건가요?</div>
+      <div class="game-select-subtitle">포인트를 걸고 도전해보세요!</div>
+      <div class="game-select-row">
+        <div class="game-select-card" onclick="openRouletteGame()">
+          <span class="gsc-icon">🎰</span>
+          <div class="gsc-name">룰렛</div>
+          <div class="gsc-desc">바퀴를 돌려<br>2배 또는 3배 획득!</div>
+          <span class="gsc-badge">최대 3배</span>
+        </div>
+        <div class="game-select-card" onclick="openMinesGame()">
+          <span class="gsc-icon">💎</span>
+          <div class="gsc-name">마인스</div>
+          <div class="gsc-desc">지뢰를 피해<br>보석을 찾아라!</div>
+          <span class="gsc-badge">최대 10배+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROULETTE GAME MODAL ===== -->
+<div class="modal-bg" id="gameBg" style="z-index:7100;">
   <div class="modal-box game-modal-box">
-    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">포인트 게임 <button class="modal-close-btn" onclick="document.getElementById('gameBg').classList.remove('open'); document.body.style.overflow='';">✕</button></div>
+    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">
+      🎰 룰렛 게임
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="game-back-btn" onclick="closeRouletteBack()">← 뒤로</button>
+        <button class="modal-close-btn" onclick="closeRouletteGame()">✕</button>
+      </div>
+    </div>
     <div class="game-inner">
       <div class="game-my-pts">내 포인트: <strong id="gamePtsDisplay">0P</strong></div>
 
@@ -700,9 +871,7 @@ body.board-big .card-likes { color: #e57373; }
       <div class="pt-transfer-section">
         <div class="pt-transfer-title">포인트 선물하기</div>
         <div class="pt-transfer-row">
-          <select id="ptTargetSelect">
-            <option value="">받을 사람 선택</option>
-          </select>
+          <select id="ptTargetSelect"><option value="">받을 사람 선택</option></select>
           <input id="ptSendAmount" type="number" min="1" placeholder="P 입력">
           <button class="pt-send-btn" id="ptSendBtn" onclick="sendPointToUser()">보내기</button>
         </div>
@@ -712,10 +881,76 @@ body.board-big .card-likes { color: #e57373; }
   </div>
 </div>
 
+<!-- ===== MINES GAME MODAL ===== -->
+<div class="modal-bg" id="minesBg" style="z-index:7100;">
+  <div class="modal-box mines-modal-box">
+    <div class="modal-title-bar" style="background:#1a3a5c; letter-spacing:1px;">
+      💎 마인스 게임
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="game-back-btn" onclick="closeMinesBack()">← 뒤로</button>
+        <button class="modal-close-btn" onclick="closeMinesGame()">✕</button>
+      </div>
+    </div>
+    <div class="mines-inner">
+      <div class="mines-my-pts">내 포인트: <strong id="minesPtsDisplay">0P</strong></div>
+
+      <!-- 베팅 -->
+      <div class="mines-bet-row" id="minesBetSection">
+        <span style="font-size:12px;color:#555;font-weight:600;">베팅</span>
+        <button class="bet-btn" onclick="setMinesBet(10)">10P</button>
+        <button class="bet-btn" onclick="setMinesBet(50)">50P</button>
+        <button class="bet-btn" onclick="setMinesBet(100)">100P</button>
+        <button class="bet-btn" onclick="setMinesBet(500)">500P</button>
+        <button class="bet-btn allin-btn" onclick="setMinesAllIn()">올인</button>
+        <input class="bet-input" id="minesBetInput" type="number" value="10" min="1" placeholder="직접 입력" oninput="document.querySelectorAll('#minesBetSection .bet-btn').forEach(b=>b.classList.remove('on'))">
+      </div>
+
+      <!-- 상태바 -->
+      <div class="mines-state-bar" id="minesStateBar" style="display:none;">
+        <div class="mines-state-col">
+          <span class="mines-state-label">베팅</span>
+          <span class="mines-state-val" id="minesStatBet">0P</span>
+        </div>
+        <div class="mines-state-col">
+          <span class="mines-state-label">배율</span>
+          <span class="mines-state-val green mines-mult-display" id="minesStatMult">1.00×</span>
+        </div>
+        <div class="mines-state-col">
+          <span class="mines-state-label">예상 수익</span>
+          <span class="mines-state-val green" id="minesStatProfit">0P</span>
+        </div>
+        <div class="mines-state-col">
+          <span class="mines-state-label">남은 보석</span>
+          <span class="mines-state-val" id="minesStatSafe">39</span>
+        </div>
+      </div>
+
+      <!-- 그리드 -->
+      <div class="mines-grid" id="minesGrid"></div>
+
+      <!-- 게임 정보 (비활성 시) -->
+      <div id="minesIdleInfo" style="font-size:11px;color:#888;text-align:center;line-height:1.8;">
+        7×7 칸 · 지뢰 10개 숨어있음<br>
+        보석💎을 찾을수록 배율이 올라갑니다<br>
+        지뢰💣를 밟으면 베팅 포인트를 잃어요
+      </div>
+
+      <!-- 액션 버튼 -->
+      <div class="mines-action-row">
+        <button class="mines-start-btn" id="minesStartBtn" onclick="startMinesGame()">게임 시작</button>
+        <button class="mines-cashout-btn" id="minesCashoutBtn" onclick="minesCashout()" style="display:none;" disabled>
+          수익 실현 (<span id="cashoutAmt">0P</span>)
+        </button>
+      </div>
+
+      <div class="mines-result-msg idle" id="minesResult">베팅 포인트를 설정하고 시작하세요.</div>
+    </div>
+  </div>
+</div>
+
 <!-- POST WARNING MODAL -->
 <div id="postWarnOverlay">
   <div class="warn-box">
-    
     <div class="warn-title">포인트 악용 금지 안내</div>
     <div class="warn-text">
       포인트를 얻기 위해 <strong>글·댓글을 연속적으로 무의미하게 작성</strong>할 시<br>
@@ -818,7 +1053,7 @@ body.board-big .card-likes { color: #e57373; }
       </table>
     </div>
     <div class="admin-section" id="adminPoints">
-      <p style="font-size:11px;color:#888;margin-bottom:12px;">포인트는 어드민만 지급/차감/초기화할 수 있으며 회원 간 양도는 불가합니다.</p>
+      <p style="font-size:11px;color:#888;margin-bottom:12px;">포인트는 어드민만 지급/차감/초기화할 수 있습니다.</p>
       <table class="admin-table">
         <thead><tr><th>이름</th><th>이메일</th><th>현재 포인트</th><th>지급/차감</th></tr></thead>
         <tbody id="adminPointTbody"></tbody>
@@ -838,7 +1073,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove, increment, query, orderBy, onSnapshot, serverTimestamp, getDocs, setDoc, getDoc, where, limit, writeBatch, deleteField } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyCRV6NxlgzoM3wMmIJG3EIyOV7bbuCwrC8",
   authDomain: "kangil-community.firebaseapp.com",
@@ -853,11 +1087,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// ===== CLOUDINARY =====
 const CLOUDINARY_CLOUD = 'dtjefxz4x';
-const CLOUDINARY_PRESET = 'kangil_unsigned'; // 아래에서 만들 upload preset 이름
-
-// 관리자 UID — 로그인 후 콘솔(F12)에서 UID 확인 후 교체
+const CLOUDINARY_PRESET = 'kangil_unsigned';
 const ADMIN_UIDS = ['3JB7t2MDAdg146biBHHOWUmbn683'];
 
 let currentUser = null, isAdmin = false;
@@ -866,15 +1097,12 @@ let currentPostId = null, pendingImgs = [], allPosts = [];
 let searchQ = '', searchType = 'all';
 const PER_PAGE = 15;
 
-// ===== POINT SYSTEM =====
-const POINT_POST        = 10;   // 글 작성 (자유게시판/공지)
-const POINT_POST_SMALL  = 100;  // 작은물 글 작성
-const POINT_POST_BIG    = 200;  // 큰물 글 작성
-const POINT_COMMENT = 10;   // 댓글 작성
-const POINT_LIKE    = 10;   // 좋아요 받기
-const POINT_ATTEND  = 40;   // 출석 체크
-const BOARD_SMALL_MIN = 500;  // 작은물 최소 포인트
-const BOARD_BIG_MIN   = 1000; // 큰물 최소 포인트
+const POINT_POST        = 10;
+const POINT_POST_SMALL  = 100;
+const POINT_POST_BIG    = 200;
+const POINT_COMMENT = 10;
+const POINT_LIKE    = 10;
+const POINT_ATTEND  = 40;
 
 let myPoints = 0;
 
@@ -922,11 +1150,9 @@ const CAT = {
   big:    { label:'큰물',    cls:'cat-big',    name:'큰물' },
 };
 
-// DISCLAIMER
 window.agreeDisc = () => {
   sessionStorage.setItem('gn_ok','1');
   document.getElementById('disclaimerOverlay').style.display = 'none';
-  // 익명 로그인 안내 배너 6초 표시
   const banner = document.getElementById('anonInfoBanner');
   if (banner) {
     banner.style.display = 'block';
@@ -938,7 +1164,6 @@ window.agreeDisc = () => {
 };
 if (sessionStorage.getItem('gn_ok')) document.getElementById('disclaimerOverlay').style.display = 'none';
 
-// AUTH
 onAuthStateChanged(auth, async user => {
   currentUser = user;
   isAdmin = user ? ADMIN_UIDS.includes(user.uid) : false;
@@ -955,7 +1180,6 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('noticeOption').style.display = isAdmin ? 'block' : 'none';
     try { await setDoc(doc(db,'users',user.uid),{ email:user.email||'', photo:user.photoURL||'', last:serverTimestamp() },{merge:true}); } catch(e){}
     await loadMyPoints();
-    // 닉네임: Firestore customName 우선, 없으면 displayName
     try {
       const snap = await getDoc(doc(db,'users',user.uid));
       const d = snap.exists() ? snap.data() : {};
@@ -966,7 +1190,7 @@ onAuthStateChanged(auth, async user => {
       document.getElementById('userNameTop').textContent = user.displayName || user.email;
     }
     checkAttendance();
-    setTimeout(updateGameDisplay, 300);
+    setTimeout(updateAllGameDisplays, 300);
   } else {
     myPoints = 0;
     const badge = document.getElementById('userPointBadge');
@@ -982,14 +1206,11 @@ onAuthStateChanged(auth, async user => {
   renderAll();
 });
 
-// ===== NICKNAME CHANGE =====
 const NICK_CHANGE_COST = 200;
-
 window.openNickModal = async () => {
   if (!currentUser) { toast('로그인 후 이용하세요'); return; }
   document.getElementById('nickErrMsg').textContent = '';
   document.getElementById('nickInput').value = '';
-  // 현재 닉네임 표시
   try {
     const snap = await getDoc(doc(db,'users',currentUser.uid));
     const d = snap.exists() ? snap.data() : {};
@@ -1006,22 +1227,14 @@ window.openNickModal = async () => {
   } catch(e) {}
   document.getElementById('nickModal').style.display = 'flex';
 };
-
-window.closeNickModal = () => {
-  document.getElementById('nickModal').style.display = 'none';
-};
-
+window.closeNickModal = () => { document.getElementById('nickModal').style.display = 'none'; };
 window.submitNickChange = async () => {
   if (!currentUser) return;
   const newNick = document.getElementById('nickInput').value.trim();
   const errEl = document.getElementById('nickErrMsg');
   errEl.textContent = '';
-  if (newNick.length < 2 || newNick.length > 12) {
-    errEl.textContent = '닉네임은 2~12자 사이여야 합니다.'; return;
-  }
-  if (/[<>&"']/.test(newNick)) {
-    errEl.textContent = '특수문자(<>&"\')는 사용할 수 없습니다.'; return;
-  }
+  if (newNick.length < 2 || newNick.length > 12) { errEl.textContent = '닉네임은 2~12자 사이여야 합니다.'; return; }
+  if (/[<>&"']/.test(newNick)) { errEl.textContent = '특수문자(<>&"\')는 사용할 수 없습니다.'; return; }
   const btn = document.getElementById('nickSubmitBtn');
   btn.disabled = true; btn.textContent = '처리 중...';
   try {
@@ -1029,12 +1242,8 @@ window.submitNickChange = async () => {
     const d = snap.exists() ? snap.data() : {};
     const changeCount = d.nickChangeCount || 0;
     const pts = d.points || 0;
-    if (pts < NICK_CHANGE_COST) {
-      errEl.textContent = `포인트가 부족합니다. (필요: ${NICK_CHANGE_COST}P, 보유: ${pts}P)`;
-      btn.disabled = false; btn.textContent = '변경하기'; return;
-    }
-    const updateData = { customName: newNick, name: newNick, nickChangeCount: changeCount + 1, points: pts - NICK_CHANGE_COST };
-    await updateDoc(doc(db,'users',currentUser.uid), updateData);
+    if (pts < NICK_CHANGE_COST) { errEl.textContent = `포인트가 부족합니다. (필요: ${NICK_CHANGE_COST}P, 보유: ${pts}P)`; btn.disabled = false; btn.textContent = '변경하기'; return; }
+    await updateDoc(doc(db,'users',currentUser.uid), { customName: newNick, name: newNick, nickChangeCount: changeCount + 1, points: pts - NICK_CHANGE_COST });
     myPoints -= NICK_CHANGE_COST;
     const badge = document.getElementById('userPointBadge');
     if (badge) badge.textContent = myPoints + 'P';
@@ -1049,62 +1258,37 @@ window.copyMyUID = () => {
   const user = auth.currentUser;
   if(!user) return;
   navigator.clipboard.writeText(user.uid).then(() => {
-    toast('UID가 복사되었습니다! index.html의 REPLACE_WITH_YOUR_UID 부분에 붙여넣기 하세요.');
+    toast('UID가 복사되었습니다!');
   }).catch(() => {
     prompt('아래 UID를 복사하세요:', user.uid);
   });
 };
-
-window.openEmailModal = () => {
-  const m = document.getElementById('emailModal');
-  m.style.display = 'flex';
-};
-window.closeEmailModal = () => {
-  document.getElementById('emailModal').style.display = 'none';
-};
+window.openEmailModal = () => { document.getElementById('emailModal').style.display = 'flex'; };
+window.closeEmailModal = () => { document.getElementById('emailModal').style.display = 'none'; };
 window.emailLogin = async () => {
   const email = document.getElementById('emailInput').value.trim();
   const pw = document.getElementById('passwordInput').value;
   if(!email || !pw) return toast('이메일과 비밀번호를 입력하세요');
-  try {
-    await signInWithEmailAndPassword(auth, email, pw);
-    toast('로그인 성공!');
-    closeEmailModal();
-  } catch(e) {
-    if(e.code === 'auth/user-not-found') toast('존재하지 않는 계정입니다');
-    else if(e.code === 'auth/wrong-password') toast('비밀번호가 틀렸습니다');
-    else toast('로그인 실패: ' + e.message);
-  }
+  try { await signInWithEmailAndPassword(auth, email, pw); toast('로그인 성공!'); closeEmailModal(); }
+  catch(e) { if(e.code==='auth/user-not-found') toast('존재하지 않는 계정'); else if(e.code==='auth/wrong-password') toast('비밀번호 오류'); else toast('로그인 실패: '+e.message); }
 };
 window.emailSignup = async () => {
   const email = document.getElementById('emailInput').value.trim();
   const pw = document.getElementById('passwordInput').value;
   if(!email || !pw) return toast('이메일과 비밀번호를 입력하세요');
-  if(pw.length < 6) return toast('비밀번호는 6자 이상이어야 합니다');
-  try {
-    await createUserWithEmailAndPassword(auth, email, pw);
-    toast('회원가입 완료!');
-    closeEmailModal();
-  } catch(e) {
-    if(e.code === 'auth/email-already-in-use') toast('이미 사용중인 이메일입니다');
-    else toast('회원가입 실패: ' + e.message);
-  }
+  if(pw.length < 6) return toast('비밀번호는 6자 이상');
+  try { await createUserWithEmailAndPassword(auth, email, pw); toast('회원가입 완료!'); closeEmailModal(); }
+  catch(e) { if(e.code==='auth/email-already-in-use') toast('이미 사용중인 이메일'); else toast('회원가입 실패: '+e.message); }
 };
-
 window.googleLogin = async () => { try { await signInWithPopup(auth, provider); } catch(e) { toast('로그인 실패'); } };
 window.googleLogout = async () => { await signOut(auth); toast('로그아웃'); };
 
-// REALTIME
 onSnapshot(query(collection(db,'posts'), orderBy('time','desc')), snap => {
   allPosts = snap.docs.map(d => ({id:d.id,...d.data()}));
   renderAll();
 });
 
-// BOARD NAV
 window.goBoard = cat => {
-  // 포인트 잠금 체크
-
-
   currentBoard = cat; currentPage = 1; searchQ = '';
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.gnb-item').forEach(el => el.classList.remove('active'));
@@ -1114,27 +1298,6 @@ window.goBoard = cat => {
   document.getElementById('boardTitleBar').textContent = name;
   renderAll();
 };
-
-function showLockedBoard(name, required) {
-  const myPts = myPoints;
-  const tb = document.getElementById('postTbody');
-  // 카드 게시판이므로 thead 숨기기
-  const thead = document.querySelector('.post-table thead');
-  if (thead) thead.style.display = 'none';
-  const tbl = document.querySelector('.post-table');
-  tbl.style.border = 'none';
-  tbl.style.background = 'transparent';
-  tb.innerHTML = `<tr><td colspan="7" style="padding:0;border:none;">
-    <div class="locked-overlay">
-      <div class="locked-icon">LOCK</div>
-      <div class="locked-title">${name} 게시판</div>
-      <div class="locked-pts">${required.toLocaleString()}P 이상 필요</div>
-      <div class="locked-sub">현재 내 포인트: <strong>${myPts.toLocaleString()}P</strong><br>
-        글 작성(+10P~+200P), 댓글(+10P), 좋아요 받기(+10P), 출석체크(+40P)로<br>포인트를 쌓아 이용해보세요!</div>
-    </div>
-  </td></tr>`;
-  document.getElementById('paging').innerHTML = '';
-}
 
 function getFiltered() {
   let list = [...allPosts];
@@ -1169,10 +1332,7 @@ function renderTable() {
   const start = (currentPage-1)*PER_PAGE;
   const page = list.slice(start, start+PER_PAGE);
   const tb = document.getElementById('postTbody');
-  const tbl = document.querySelector('.post-table');
-  if (tbl) tbl.style.background = '';
-
-  if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다. 첫 번째 글을 작성해보세요!</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
+  if (!page.length) { tb.innerHTML=`<tr class="empty-row"><td colspan="7">게시물이 없습니다.</td></tr>`; document.getElementById('paging').innerHTML=''; return; }
   tb.innerHTML = page.map((p,i) => {
     const cat = CAT[p.cat]||{label:p.cat,cls:'cat-free'};
     const isNotice = p.cat==='notice';
@@ -1229,16 +1389,13 @@ window.setSort = (s,btn) => { currentSort=s; currentPage=1; document.querySelect
 window.doSearch = () => { searchQ=document.getElementById('searchInput').value.trim(); searchType=document.getElementById('searchType').value; currentPage=1; renderTable(); };
 document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') window.doSearch(); });
 
-// WRITE
 window.openWrite = () => {
   if(!currentUser){toast('로그인 후 글을 쓸 수 있어요');return;}
-  // 경고 모달 없이 바로 작성창 열기
   pendingImgs=[]; document.getElementById('imgPreview').innerHTML='';
   document.getElementById('wTitle').value=''; document.getElementById('wContent').value='';
   document.getElementById('imgInput').value=''; document.getElementById('uploadNotice').textContent='';
   document.getElementById('writeBg').classList.add('open');
 };
-
 window.confirmWarnAndWrite = () => {
   document.getElementById('postWarnOverlay').classList.remove('open');
   pendingImgs=[]; document.getElementById('imgPreview').innerHTML='';
@@ -1266,7 +1423,6 @@ function processFiles(files) {
   const toAdd = Array.from(files).slice(0, left);
   toAdd.forEach(f => {
     if (f.size > 5 * 1024 * 1024) { notice.textContent = `${f.name} 파일이 5MB를 초과합니다 (건너뜀)`; return; }
-    // File 객체 + 미리보기 URL 함께 저장
     pendingImgs.push({ file: f, preview: URL.createObjectURL(f) });
     renderPreviews();
   });
@@ -1277,11 +1433,7 @@ function renderPreviews() {
     `<div class="prev-item"><img src="${item.preview}"><button class="prev-del" onclick="delImg(${i})">✕</button></div>`
   ).join('');
 }
-window.delImg = i => {
-  URL.revokeObjectURL(pendingImgs[i].preview);
-  pendingImgs.splice(i, 1);
-  renderPreviews();
-};
+window.delImg = i => { URL.revokeObjectURL(pendingImgs[i].preview); pendingImgs.splice(i, 1); renderPreviews(); };
 
 window.submitPost = async () => {
   const title = document.getElementById('wTitle').value.trim();
@@ -1292,9 +1444,7 @@ window.submitPost = async () => {
   if (cat === 'notice' && !isAdmin) { toast('관리자만 공지를 작성할 수 있습니다'); return; }
   const btn = document.getElementById('submitBtn');
   btn.textContent = '업로드 중...'; btn.disabled = true;
-
   try {
-    // Cloudinary에 이미지 업로드
     const imgUrls = [];
     for (let i = 0; i < pendingImgs.length; i++) {
       const item = pendingImgs[i];
@@ -1302,27 +1452,15 @@ window.submitPost = async () => {
       const fd = new FormData();
       fd.append('file', item.file);
       fd.append('upload_preset', CLOUDINARY_PRESET);
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-        method: 'POST', body: fd
-      });
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd });
       const data = await res.json();
-      if (!data.secure_url) throw new Error('이미지 업로드 실패: ' + (data.error?.message || '알 수 없는 오류'));
+      if (!data.secure_url) throw new Error('이미지 업로드 실패');
       imgUrls.push(data.secure_url);
     }
-
     btn.textContent = '저장 중...';
     const snap2 = await getDoc(doc(db, 'users', currentUser.uid));
     const authorName = (snap2.exists() && snap2.data().customName) || currentUser.displayName || currentUser.email;
-    await addDoc(collection(db, 'posts'), {
-      cat, title, content,
-      author: authorName,
-      authorId: currentUser.uid,
-      authorPhoto: currentUser.photoURL || '',
-      time: serverTimestamp(),
-      imgs: imgUrls,
-      likes: 0, likedBy: [], views: 0, cmtCount: 0
-    });
-
+    await addDoc(collection(db, 'posts'), { cat, title, content, author: authorName, authorId: currentUser.uid, authorPhoto: currentUser.photoURL || '', time: serverTimestamp(), imgs: imgUrls, likes: 0, likedBy: [], views: 0, cmtCount: 0 });
     const postPts = cat === 'small' ? POINT_POST_SMALL : cat === 'big' ? POINT_POST_BIG : POINT_POST;
     await addPoints(currentUser.uid, postPts);
     pendingImgs.forEach(item => URL.revokeObjectURL(item.preview));
@@ -1330,16 +1468,10 @@ window.submitPost = async () => {
     window.closeWrite();
     toast(`게시물이 등록되었습니다! (+${postPts}P)`);
     currentPage = 1;
-  } catch (e) {
-    toast('오류: ' + e.message);
-    console.error(e);
-  } finally {
-    btn.textContent = '등록하기';
-    btn.disabled = false;
-  }
+  } catch (e) { toast('오류: ' + e.message); }
+  finally { btn.textContent = '등록하기'; btn.disabled = false; }
 };
 
-// DETAIL
 window.openDetail = async id => {
   const p = allPosts.find(x=>x.id===id); if(!p) return;
   currentPostId = id;
@@ -1376,15 +1508,11 @@ window.toggleLike = async () => {
     await updateDoc(r2,{likedBy:arrayUnion(uid),likes:increment(1)});
     document.getElementById('likeBtn').classList.add('on');
     toast('추천했습니다!');
-    // 글 작성자에게 포인트 지급 (자신 제외)
-    if (p.authorId && p.authorId !== uid) {
-      await addPoints(p.authorId, POINT_LIKE);
-    }
+    if (p.authorId && p.authorId !== uid) await addPoints(p.authorId, POINT_LIKE);
   }
 };
 window.doShare = () => { navigator.clipboard?.writeText(location.href).then(()=>toast('링크가 복사되었습니다')).catch(()=>toast('공유: '+location.href)); };
 
-// COMMENTS
 let cmtUnsub = null;
 function loadComments(postId) {
   if(cmtUnsub) cmtUnsub();
@@ -1392,18 +1520,10 @@ function loadComments(postId) {
     const cmts = snap.docs.map(d=>({id:d.id,...d.data()}));
     document.getElementById('cmtTitle').textContent = `댓글 ${cmts.length}개`;
     document.getElementById('cmtList').innerHTML = cmts.length
-      ? cmts.map(c=>`
-          <div class="cmt-item">
-            <img class="cmt-avatar" src="${c.authorPhoto||''}" onerror="this.style.display='none'">
-            <span class="cmt-author">${esc(c.author||'익명')}</span>
-            <span class="cmt-body">${esc(c.text)}</span>
-            <span class="cmt-time">${fmtDate(c.time)}</span>
-            ${isAdmin?`<button class="cmt-del-btn" onclick="adminDelCmt('${postId}','${c.id}')">삭제</button>`:''}
-          </div>`).join('')
-      : '<div class="no-cmt">댓글이 없습니다. 첫 댓글을 남겨보세요!</div>';
+      ? cmts.map(c=>`<div class="cmt-item"><img class="cmt-avatar" src="${c.authorPhoto||''}" onerror="this.style.display='none'"><span class="cmt-author">${esc(c.author||'익명')}</span><span class="cmt-body">${esc(c.text)}</span><span class="cmt-time">${fmtDate(c.time)}</span>${isAdmin?`<button class="cmt-del-btn" onclick="adminDelCmt('${postId}','${c.id}')">삭제</button>`:''}</div>`).join('')
+      : '<div class="no-cmt">댓글이 없습니다.</div>';
   });
 }
-
 window.addCmt = async () => {
   if(!currentUser){toast('로그인 후 댓글을 작성할 수 있어요');return;}
   const text = document.getElementById('cmtText').value.trim();
@@ -1419,100 +1539,33 @@ window.addCmt = async () => {
 };
 document.getElementById('cmtText').addEventListener('keydown', e=>{ if(e.key==='Enter') window.addCmt(); });
 
-// ADMIN
-window.adminDelDirect = async id => {
-  if(!isAdmin) return;
-  if(!confirm('이 게시물을 삭제하시겠습니까?')) return;
-  try{ await deleteDoc(doc(db,'posts',id)); toast('삭제되었습니다'); }catch(e){toast('삭제 실패');}
-};
-window.adminDeletePost = async () => {
-  if(!isAdmin||!currentPostId) return;
-  if(!confirm('이 게시물을 삭제하시겠습니까?')) return;
-  try{ await deleteDoc(doc(db,'posts',currentPostId)); window.closeDetail(); toast('삭제되었습니다'); }catch(e){toast('삭제 실패');}
-};
-window.adminDelCmt = async (postId, cmtId) => {
-  if(!isAdmin) return;
-  if(!confirm('댓글을 삭제하시겠습니까?')) return;
-  try{ await deleteDoc(doc(db,'posts',postId,'comments',cmtId)); await updateDoc(doc(db,'posts',postId),{cmtCount:increment(-1)}); toast('댓글 삭제'); }catch(e){toast('삭제 실패');}
-};
+window.adminDelDirect = async id => { if(!isAdmin) return; if(!confirm('삭제하시겠습니까?')) return; try{ await deleteDoc(doc(db,'posts',id)); toast('삭제됨'); }catch(e){toast('실패');} };
+window.adminDeletePost = async () => { if(!isAdmin||!currentPostId) return; if(!confirm('삭제하시겠습니까?')) return; try{ await deleteDoc(doc(db,'posts',currentPostId)); window.closeDetail(); toast('삭제됨'); }catch(e){toast('실패');} };
+window.adminDelCmt = async (postId, cmtId) => { if(!isAdmin) return; if(!confirm('댓글 삭제?')) return; try{ await deleteDoc(doc(db,'posts',postId,'comments',cmtId)); await updateDoc(doc(db,'posts',postId),{cmtCount:increment(-1)}); toast('댓글 삭제'); }catch(e){} };
 
 window.openAdminPanel = async () => {
   if(!isAdmin) return;
   document.getElementById('adminBg').classList.add('open');
   const sorted = [...allPosts].sort((a,b)=>(b.time?.seconds||0)-(a.time?.seconds||0));
-  document.getElementById('adminPostTbody').innerHTML = sorted.map(p=>`
-    <tr>
-      <td><span class="cat-badge ${CAT[p.cat]?.cls||'cat-free'}">${CAT[p.cat]?.label||p.cat}</span></td>
-      <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(p.title)}</td>
-      <td>${esc(p.author||'')}</td>
-      <td>${fmtDate(p.time)}</td>
-      <td><button class="a-del" onclick="adminDelDirect('${p.id}')">삭제</button></td>
-    </tr>`).join('');
+  document.getElementById('adminPostTbody').innerHTML = sorted.map(p=>`<tr><td><span class="cat-badge ${CAT[p.cat]?.cls||'cat-free'}">${CAT[p.cat]?.label||p.cat}</span></td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(p.title)}</td><td>${esc(p.author||'')}</td><td>${fmtDate(p.time)}</td><td><button class="a-del" onclick="adminDelDirect('${p.id}')">삭제</button></td></tr>`).join('');
   try {
     const snap = await getDocs(collection(db,'users'));
-    const rows = snap.docs.map(d=>{
-      const u=d.data(), uid=d.id;
-      const cnt = allPosts.filter(p=>p.authorId===uid).length;
-      const pts = u.points || 0;
-      return { uid, u, cnt, pts };
-    });
-    document.getElementById('adminUserTbody').innerHTML = rows.map(({uid,u,cnt})=>`<tr>
-        <td>${esc(u.name||'')}</td>
-        <td style="font-size:11px;color:#888;">${esc(u.email||'')}</td>
-        <td>${cnt}</td>
-        <td><button class="a-ban" onclick="adminBanUser('${uid}','${esc(u.name||u.email||'')}')">글 전체삭제</button></td>
-      </tr>`).join('');
-    document.getElementById('adminPointTbody').innerHTML = rows.map(({uid,u,pts})=>`<tr>
-        <td>${esc(u.name||'')}</td>
-        <td style="font-size:11px;color:#888;">${esc(u.email||'')}</td>
-        <td><strong style="color:#f39c12;">${pts.toLocaleString()}P</strong></td>
-        <td>
-          <input class="a-pt-input" id="ptInput_${uid}" type="number" placeholder="포인트" min="1">
-          <button class="a-pt-give" onclick="adminGivePoints('${uid}')">지급</button>
-          <button class="a-pt-del"  onclick="adminDeductPoints('${uid}')">차감</button>
-          <button class="a-del" onclick="adminResetPoints('${uid}','${esc(u.name||'')}')">초기화</button>
-        </td>
-      </tr>`).join('');
+    const rows = snap.docs.map(d=>{ const u=d.data(), uid=d.id; const cnt = allPosts.filter(p=>p.authorId===uid).length; const pts = u.points || 0; return { uid, u, cnt, pts }; });
+    document.getElementById('adminUserTbody').innerHTML = rows.map(({uid,u,cnt})=>`<tr><td>${esc(u.name||'')}</td><td style="font-size:11px;color:#888;">${esc(u.email||'')}</td><td>${cnt}</td><td><button class="a-ban" onclick="adminBanUser('${uid}','${esc(u.name||u.email||'')}')">글 전체삭제</button></td></tr>`).join('');
+    document.getElementById('adminPointTbody').innerHTML = rows.map(({uid,u,pts})=>`<tr><td>${esc(u.name||'')}</td><td style="font-size:11px;color:#888;">${esc(u.email||'')}</td><td><strong style="color:#f39c12;">${pts.toLocaleString()}P</strong></td><td><input class="a-pt-input" id="ptInput_${uid}" type="number" placeholder="포인트" min="1"><button class="a-pt-give" onclick="adminGivePoints('${uid}')">지급</button><button class="a-pt-del" onclick="adminDeductPoints('${uid}')">차감</button><button class="a-del" onclick="adminResetPoints('${uid}','${esc(u.name||'')}')">초기화</button></td></tr>`).join('');
   } catch(e) {
-    document.getElementById('adminUserTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">Firestore 권한 설정 필요</td></tr>`;
-    document.getElementById('adminPointTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">Firestore 권한 설정 필요</td></tr>`;
+    document.getElementById('adminUserTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">권한 설정 필요</td></tr>`;
+    document.getElementById('adminPointTbody').innerHTML=`<tr><td colspan="4" style="color:#aaa;">권한 설정 필요</td></tr>`;
   }
 };
-window.adminBanUser = async (uid, name) => {
-  if(!isAdmin) return;
-  if(!confirm(`${name}의 모든 게시물을 삭제하시겠습니까?`)) return;
-  const targets = allPosts.filter(p=>p.authorId===uid);
-  for(const p of targets){ try{ await deleteDoc(doc(db,'posts',p.id)); }catch(e){} }
-  toast(`${name} 게시물 ${targets.length}개 삭제`);
-};
+window.adminBanUser = async (uid, name) => { if(!isAdmin) return; if(!confirm(`${name}의 모든 게시물을 삭제?`)) return; const targets = allPosts.filter(p=>p.authorId===uid); for(const p of targets){ try{ await deleteDoc(doc(db,'posts',p.id)); }catch(e){} } toast(`${name} 게시물 ${targets.length}개 삭제`); };
+window.adminGivePoints = async uid => { if(!isAdmin) return; const val = parseInt(document.getElementById('ptInput_'+uid)?.value); if(!val||val<=0) return toast('포인트 입력 필요'); try { await updateDoc(doc(db,'users',uid),{points:increment(val)}); toast(`+${val}P 지급`); openAdminPanel(); } catch(e){ toast('오류'); } };
+window.adminDeductPoints = async uid => { if(!isAdmin) return; const val = parseInt(document.getElementById('ptInput_'+uid)?.value); if(!val||val<=0) return toast('포인트 입력 필요'); try { await updateDoc(doc(db,'users',uid),{points:increment(-val)}); toast(`-${val}P 차감`); openAdminPanel(); } catch(e){ toast('오류'); } };
+window.adminResetPoints = async (uid, name) => { if(!isAdmin) return; if(!confirm(`${name}의 포인트를 초기화?`)) return; try { await updateDoc(doc(db,'users',uid),{points:0}); toast('초기화 완료'); openAdminPanel(); } catch(e){ toast('오류'); } };
+window.switchAdminTab = (tab, btn) => { document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on')); document.getElementById('admin'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('on'); };
 
-window.adminGivePoints = async uid => {
-  if(!isAdmin) return;
-  const val = parseInt(document.getElementById('ptInput_'+uid)?.value);
-  if(!val||val<=0) return toast('지급할 포인트를 입력하세요');
-  try { await updateDoc(doc(db,'users',uid),{points:increment(val)}); toast(`+${val}P 지급 완료`); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
-};
-window.adminDeductPoints = async uid => {
-  if(!isAdmin) return;
-  const val = parseInt(document.getElementById('ptInput_'+uid)?.value);
-  if(!val||val<=0) return toast('차감할 포인트를 입력하세요');
-  try { await updateDoc(doc(db,'users',uid),{points:increment(-val)}); toast(`-${val}P 차감 완료`); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
-};
-window.adminResetPoints = async (uid, name) => {
-  if(!isAdmin) return;
-  if(!confirm(`${name}의 포인트를 0으로 초기화하시겠습니까?`)) return;
-  try { await updateDoc(doc(db,'users',uid),{points:0}); toast('포인트 초기화 완료'); openAdminPanel(); } catch(e){ toast('오류: '+e.message); }
-};
-window.switchAdminTab = (tab, btn) => {
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));
-  document.getElementById('admin'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('on');
-};
-
-// LIGHTBOX
 window.openLb = src => { document.getElementById('lbImg').src=src; document.getElementById('lb').classList.add('open'); };
 
-// UTILS
 window.esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 window.fmtDate = ts => {
   if(!ts) return '';
@@ -1534,15 +1587,46 @@ window.toast = msg => { const t=document.getElementById('toast'); t.textContent=
 
 window.goBoard('all');
 
-// ===== GAME MODAL =====
-window.openGameModal = () => {
-  document.getElementById('gameBg').classList.add('open');
+// =====================================================================
+// ===== GAME SELECT ===================================================
+// =====================================================================
+window.openGameSelect = () => {
+  if (!currentUser) { toast('로그인 후 이용하세요'); return; }
+  document.getElementById('gameSelectBg').classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 50);
-  loadPtUserList();
+};
+window.closeGameSelect = () => {
+  document.getElementById('gameSelectBg').classList.remove('open');
+  document.body.style.overflow = '';
 };
 
-// 포인트 전송 - 유저 목록 로드
+function updateAllGameDisplays() {
+  const rEl = document.getElementById('gamePtsDisplay');
+  if (rEl) rEl.textContent = myPoints.toLocaleString() + 'P';
+  const mEl = document.getElementById('minesPtsDisplay');
+  if (mEl) mEl.textContent = myPoints.toLocaleString() + 'P';
+}
+
+// =====================================================================
+// ===== ROULETTE GAME =================================================
+// =====================================================================
+window.openRouletteGame = () => {
+  closeGameSelect();
+  document.getElementById('gameBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { drawRoulette(); updateAllGameDisplays(); }, 50);
+  loadPtUserList();
+};
+window.closeRouletteBack = () => {
+  document.getElementById('gameBg').classList.remove('open');
+  document.body.style.overflow = '';
+  openGameSelect();
+};
+window.closeRouletteGame = () => {
+  document.getElementById('gameBg').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
 async function loadPtUserList() {
   if (!currentUser) return;
   try {
@@ -1550,7 +1634,7 @@ async function loadPtUserList() {
     const sel = document.getElementById('ptTargetSelect');
     sel.innerHTML = '<option value="">받을 사람 선택</option>';
     snap.docs.forEach(d => {
-      if (d.id === currentUser.uid) return; // 자기 자신 제외
+      if (d.id === currentUser.uid) return;
       const data = d.data();
       if (!data.name) return;
       const opt = document.createElement('option');
@@ -1561,296 +1645,108 @@ async function loadPtUserList() {
   } catch(e) {}
 }
 
-// 포인트 전송 실행
 window.sendPointToUser = async () => {
   if (!currentUser) { toast('로그인이 필요합니다'); return; }
   const targetUid = document.getElementById('ptTargetSelect').value;
   const amount = parseInt(document.getElementById('ptSendAmount').value);
   const msgEl = document.getElementById('ptTransferMsg');
-
   msgEl.style.color = '#c0392b';
   if (!targetUid) { msgEl.textContent = '받을 사람을 선택해주세요.'; return; }
   if (!amount || amount < 1) { msgEl.textContent = '보낼 포인트를 입력해주세요.'; return; }
-
-  // 내 포인트 확인
   const mySnap = await getDoc(doc(db, 'users', currentUser.uid));
   const myPts = mySnap.data()?.points || 0;
   if (myPts < amount) { msgEl.textContent = `포인트가 부족합니다. (현재 ${myPts.toLocaleString()}P)`; return; }
-
   const btn = document.getElementById('ptSendBtn');
-  btn.disabled = true;
-  msgEl.style.color = '#888';
-  msgEl.textContent = '전송 중...';
-
+  btn.disabled = true; msgEl.style.color = '#888'; msgEl.textContent = '전송 중...';
   try {
-    // 배치로 원자적 처리
     const batch = writeBatch(db);
     batch.update(doc(db, 'users', currentUser.uid), { points: increment(-amount) });
     batch.update(doc(db, 'users', targetUid), { points: increment(amount) });
     await batch.commit();
-
-    // 받은 사람 이름 가져오기
     const targetSnap = await getDoc(doc(db, 'users', targetUid));
     const targetName = targetSnap.data()?.name || '상대방';
-
     msgEl.style.color = '#1e7e34';
     msgEl.textContent = `${targetName}에게 ${amount.toLocaleString()}P 전송 완료!`;
     document.getElementById('ptSendAmount').value = '';
-    updateGameDisplay();
-    await loadPtUserList(); // 목록 포인트 새로고침
-  } catch(e) {
-    msgEl.style.color = '#c0392b';
-    msgEl.textContent = '전송 실패: ' + e.message;
-  }
+    myPoints -= amount;
+    updateAllGameDisplays();
+    await loadPtUserList();
+  } catch(e) { msgEl.style.color = '#c0392b'; msgEl.textContent = '전송 실패: ' + e.message; }
   btn.disabled = false;
 };
 
-// gameBg 닫기 버튼도 overflow 복구
-document.addEventListener('DOMContentLoaded', () => {
-  const gameBgCloseBtn = document.querySelector('#gameBg .modal-close-btn');
-  if (gameBgCloseBtn) {
-    gameBgCloseBtn.addEventListener('click', () => {
-      document.getElementById('gameBg').classList.remove('open');
-      document.body.style.overflow = '';
-    });
-  }
-});
+let gameMode = 'half', spinning = false, rouletteAngle = 0;
 
-window.setMobileTab = (el) => {
-  document.querySelectorAll('.mobile-tab-bar a').forEach(a => a.classList.remove('active'));
-  el.classList.add('active');
-};
-
-// ===== ROULETTE GAME =====
-const GAME_MAX_WIN = Infinity; // 한도 없음
-let gameMode = 'half'; // 'half' | 'third'
-let gameSessionWin = 0; // 이번 세션 총 획득량
-let spinning = false;
-let rouletteAngle = 0;
-
-function updateGameDisplay() {
-  const el = document.getElementById('gamePtsDisplay');
-  if (el) el.textContent = myPoints.toLocaleString() + 'P';
-}
-
-window.selectMode = function(mode) {
-  gameMode = mode;
-  document.getElementById('modeHalf').classList.toggle('on', mode==='half');
-  document.getElementById('modeThird').classList.toggle('on', mode==='third');
-  drawRoulette();
-}
-
-window.setBet = function(v) {
-  document.getElementById('betInput').value = v;
-  document.querySelectorAll('.bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent) === v));
-  // 올인 버튼은 별도 active 처리
-  const allInBtn = document.getElementById('allInBtn');
-  if (allInBtn) allInBtn.classList.remove('on');
-}
-
-window.setAllIn = function() {
-  const v = myPoints;
-  document.getElementById('betInput').value = v;
-  document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('on'));
-  const allInBtn = document.getElementById('allInBtn');
-  if (allInBtn) allInBtn.classList.add('on');
-}
-
-// 룰렛 그리기
 function drawRoulette(highlightIdx) {
   const canvas = document.getElementById('rouletteCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const cx = 140, cy = 140, r = 130;
-
   let segments;
   if (gameMode === 'half') {
-    segments = [
-      { label: '승리', color: '#1a3a5c', win: true },
-      { label: '꽝',   color: '#8a9bb0', win: false },
-    ];
+    segments = [{ label: '승리', color: '#1a3a5c', win: true }, { label: '꽝', color: '#8a9bb0', win: false }];
   } else {
-    segments = [
-      { label: '승리', color: '#1a3a5c', win: true },
-      { label: '꽝',   color: '#8a9bb0', win: false },
-      { label: '꽝',   color: '#5d7a96', win: false },
-    ];
+    segments = [{ label: '승리', color: '#1a3a5c', win: true }, { label: '꽝', color: '#8a9bb0', win: false }, { label: '꽝', color: '#5d7a96', win: false }];
   }
-
   const n = segments.length;
   const sliceAngle = (2 * Math.PI) / n;
-
   ctx.clearRect(0, 0, 280, 280);
-
   segments.forEach((seg, i) => {
     const start = rouletteAngle + i * sliceAngle - Math.PI / 2;
     const end = start + sliceAngle;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, start, end);
-    ctx.closePath();
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, start, end); ctx.closePath();
     ctx.fillStyle = highlightIdx === i ? lighten(seg.color) : seg.color;
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    // 텍스트
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(start + sliceAngle / 2);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 15px Noto Sans KR, sans-serif';
-    ctx.shadowColor = 'rgba(0,0,0,0.4)';
-    ctx.shadowBlur = 3;
-    ctx.fillText(seg.label, r - 14, 5);
-    ctx.restore();
+    ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(start + sliceAngle / 2);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.font = 'bold 15px Noto Sans KR, sans-serif';
+    ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 3; ctx.fillText(seg.label, r - 14, 5); ctx.restore();
   });
-
-  // 테두리
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, 2*Math.PI);
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 4;
-  ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.strokeStyle = '#333'; ctx.lineWidth = 4; ctx.stroke();
 }
 
 function lighten(hex) {
   const n = parseInt(hex.slice(1), 16);
-  const r = Math.min(255, ((n>>16)&0xff)+60);
-  const g = Math.min(255, ((n>>8)&0xff)+60);
-  const b = Math.min(255, (n&0xff)+60);
+  const r = Math.min(255, ((n>>16)&0xff)+60), g = Math.min(255, ((n>>8)&0xff)+60), b = Math.min(255, (n&0xff)+60);
   return `rgb(${r},${g},${b})`;
 }
 
-// 효과음 (Web Audio API)
-function playWinSound() {
-  try {
-    const ac = new (window.AudioContext||window.webkitAudioContext)();
-    const notes = [523, 659, 784, 1047]; // C E G C
-    notes.forEach((freq, i) => {
-      const o = ac.createOscillator();
-      const g = ac.createGain();
-      o.connect(g); g.connect(ac.destination);
-      o.frequency.value = freq;
-      o.type = 'sine';
-      g.gain.setValueAtTime(0.3, ac.currentTime + i*0.12);
-      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i*0.12 + 0.3);
-      o.start(ac.currentTime + i*0.12);
-      o.stop(ac.currentTime + i*0.12 + 0.35);
-    });
-  } catch(e) {}
-}
-
-function playLoseSound() {
-  try {
-    const ac = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ac.createOscillator();
-    const g = ac.createGain();
-    o.connect(g); g.connect(ac.destination);
-    o.frequency.setValueAtTime(300, ac.currentTime);
-    o.frequency.exponentialRampToValueAtTime(80, ac.currentTime + 0.4);
-    o.type = 'sawtooth';
-    g.gain.setValueAtTime(0.3, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.5);
-    o.start(ac.currentTime);
-    o.stop(ac.currentTime + 0.5);
-  } catch(e) {}
-}
-
-// 폭죽 이펙트
-function launchConfetti() {
-  const colors = ['#f39c12','#e74c3c','#2ecc71','#3498db','#9b59b6','#1abc9c','#e67e22','#fff'];
-  for (let i = 0; i < 80; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.background = colors[Math.floor(Math.random()*colors.length)];
-    el.style.width = (8 + Math.random()*8) + 'px';
-    el.style.height = (8 + Math.random()*8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    const dur = 1.5 + Math.random() * 2;
-    el.style.animationDuration = dur + 's';
-    el.style.animationDelay = Math.random() * 0.5 + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), (dur + 0.5) * 1000);
-  }
-}
+window.selectMode = function(mode) { gameMode = mode; document.getElementById('modeHalf').classList.toggle('on', mode==='half'); document.getElementById('modeThird').classList.toggle('on', mode==='third'); drawRoulette(); };
+window.setBet = function(v) { document.getElementById('betInput').value = v; document.querySelectorAll('.game-bet-row .bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent) === v)); document.getElementById('allInBtn').classList.remove('on'); };
+window.setAllIn = function() { document.getElementById('betInput').value = myPoints; document.querySelectorAll('.game-bet-row .bet-btn').forEach(b => b.classList.remove('on')); document.getElementById('allInBtn').classList.add('on'); };
 
 window.doSpin = async () => {
   if (!currentUser) { toast('로그인 후 이용하세요'); return; }
   if (spinning) return;
-
   const bet = parseInt(document.getElementById('betInput').value) || 0;
   if (bet <= 0) { toast('베팅 포인트를 입력하세요'); return; }
   if (bet > myPoints) { toast('포인트가 부족합니다'); return; }
-
-  // 한도 체크
-  if (gameSessionWin >= GAME_MAX_WIN) {
-    document.getElementById('gameLimitWarn').style.display = 'block';
-    document.getElementById('spinBtn').disabled = true;
-    return;
-  }
-
   spinning = true;
   document.getElementById('spinBtn').disabled = true;
   document.getElementById('gameResult').className = 'game-result idle';
   document.getElementById('gameResult').textContent = '돌리는 중...';
-
   const n = gameMode === 'half' ? 2 : 3;
-
   const prize = bet * (gameMode === 'half' ? 2 : 3);
-  // 하우스 엣지: 2배 모드 실제 승률 38%, 3배 모드 실제 승률 28%
-  // → 기댓값이 항상 마이너스라 장기적으로 반드시 잃게 됨
-  // 단, 가끔(약 5% 확률) '럭키 스핀'이 발동해 일반 확률의 2.5배로 올라
-  // 그 순간엔 크게 따는 느낌을 줌
   const baseProb = gameMode === 'half' ? 0.38 : 0.28;
-  const isLucky = Math.random() < 0.05; // 5% 확률로 럭키 스핀
+  const isLucky = Math.random() < 0.05;
   const successProb = isLucky ? Math.min(baseProb * 2.5, 0.95) : baseProb;
-
   const didWin = Math.random() < successProb;
-
-  // 결과에 맞는 칸 선택 (0번 = 승리, 나머지 = 꽝)
-  const winSegIdx  = 0;
-  const loseSegIdxes = Array.from({length: n - 1}, (_, i) => i + 1);
-  const targetIdx  = didWin
-    ? winSegIdx
-    : loseSegIdxes[Math.floor(Math.random() * (n - 1))];
-
-  // 바늘은 12시(위) 고정. rouletteAngle 만큼 캔버스가 회전하므로
-  // targetIdx 칸 중심이 12시에 오는 finalAngle 을 역산한다.
-  // drawRoulette: 칸 i의 start = rouletteAngle + i*sliceRad - PI/2
-  // 칸 i 중심 = rouletteAngle + i*sliceRad + sliceRad/2 - PI/2
-  // 이게 -PI/2 (12시)가 되려면 rouletteAngle = -(i*sliceRad + sliceRad/2)
-  const sliceRad   = (2 * Math.PI) / n;
-  const centerRad  = targetIdx * sliceRad + sliceRad / 2;
-  const jitter     = (Math.random() - 0.5) * sliceRad * 0.6; // 칸 안쪽 랜덤
+  const targetIdx = didWin ? 0 : (1 + Math.floor(Math.random() * (n - 1)));
+  const sliceRad = (2 * Math.PI) / n;
+  const centerRad = targetIdx * sliceRad + sliceRad / 2;
+  const jitter = (Math.random() - 0.5) * sliceRad * 0.6;
   const finalAngle = -(centerRad + jitter);
-
-  // 현재 각도에서 finalAngle까지, 최소 3바퀴 추가로 회전
-  const startRad  = rouletteAngle;
-  const rawDelta  = ((finalAngle - startRad) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-  const totalRad  = rawDelta + 2 * Math.PI * 3; // 3바퀴 + 목적지
-  const endRad    = startRad + totalRad;
-
-  const duration  = 3000; // 3초
-  const startTime = performance.now();
-
+  const startRad = rouletteAngle;
+  const rawDelta = ((finalAngle - startRad) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+  const totalRad = rawDelta + 2 * Math.PI * 3;
+  const endRad = startRad + totalRad;
+  const duration = 3000, startTime = performance.now();
   function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
-
   function animate(now) {
-    const elapsed = now - startTime;
-    const t = Math.min(elapsed / duration, 1);
+    const t = Math.min((now - startTime) / duration, 1);
     rouletteAngle = startRad + totalRad * easeOut(t);
     drawRoulette();
-    if (t < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      rouletteAngle = endRad;
-      drawRoulette(targetIdx);
-      finishSpin(didWin, bet, prize);
-    }
+    if (t < 1) requestAnimationFrame(animate);
+    else { rouletteAngle = endRad; drawRoulette(targetIdx); finishSpin(didWin, bet, prize); }
   }
   requestAnimationFrame(animate);
 };
@@ -1858,496 +1754,517 @@ window.doSpin = async () => {
 async function finishSpin(didWin, bet, prize) {
   spinning = false;
   document.getElementById('spinBtn').disabled = false;
-
   const resultEl = document.getElementById('gameResult');
-
   if (didWin) {
-    const netGain = prize - bet; // 베팅액 제외 순이익
-    gameSessionWin += netGain;
+    const netGain = prize - bet;
     await addPoints(currentUser.uid, netGain);
-    playWinSound();
-    launchConfetti();
+    playWinSound(); launchConfetti();
     resultEl.className = 'game-result win';
     resultEl.textContent = `승리! +${netGain.toLocaleString()}P 획득! (총 ${myPoints.toLocaleString()}P)`;
-    updateGameDisplay();
-    if (gameSessionWin >= GAME_MAX_WIN) {
-      document.getElementById('gameLimitWarn').style.display = 'block';
-      document.getElementById('spinBtn').disabled = true;
-    }
   } else {
     await addPoints(currentUser.uid, -bet);
     playLoseSound();
     resultEl.className = 'game-result lose';
     resultEl.textContent = `꽝! -${bet.toLocaleString()}P (총 ${myPoints.toLocaleString()}P)`;
-    updateGameDisplay();
+  }
+  updateAllGameDisplays();
+}
+
+function playWinSound() { try { const ac=new(window.AudioContext||window.webkitAudioContext)(); [523,659,784,1047].forEach((freq,i)=>{ const o=ac.createOscillator(),g=ac.createGain(); o.connect(g); g.connect(ac.destination); o.frequency.value=freq; o.type='sine'; g.gain.setValueAtTime(0.3,ac.currentTime+i*0.12); g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+i*0.12+0.3); o.start(ac.currentTime+i*0.12); o.stop(ac.currentTime+i*0.12+0.35); }); }catch(e){} }
+function playLoseSound() { try { const ac=new(window.AudioContext||window.webkitAudioContext)(); const o=ac.createOscillator(),g=ac.createGain(); o.connect(g); g.connect(ac.destination); o.frequency.setValueAtTime(300,ac.currentTime); o.frequency.exponentialRampToValueAtTime(80,ac.currentTime+0.4); o.type='sawtooth'; g.gain.setValueAtTime(0.3,ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.5); o.start(ac.currentTime); o.stop(ac.currentTime+0.5); }catch(e){} }
+function launchConfetti() { const colors=['#f39c12','#e74c3c','#2ecc71','#3498db','#9b59b6','#1abc9c','#fff']; for(let i=0;i<80;i++){ const el=document.createElement('div'); el.className='confetti-piece'; el.style.left=Math.random()*100+'vw'; el.style.background=colors[Math.floor(Math.random()*colors.length)]; const dur=1.5+Math.random()*2; el.style.animationDuration=dur+'s'; el.style.animationDelay=Math.random()*0.5+'s'; document.body.appendChild(el); setTimeout(()=>el.remove(),(dur+0.5)*1000); } }
+
+setTimeout(() => { drawRoulette(); updateAllGameDisplays(); }, 100);
+
+// =====================================================================
+// ===== MINES GAME ====================================================
+// =====================================================================
+// 7x7 = 49칸, 지뢰 10개, 보석 39개
+// 배율표: 찾은 보석 수에 따라 증가 (카지노 마인스 스타일)
+// 기댓값을 마이너스로 유지하면서 흥미로운 배율 제공
+
+const MINES_ROWS = 7;
+const MINES_COLS = 7;
+const MINES_TOTAL = 49;
+const MINES_COUNT = 10; // 지뢰 개수
+const MINES_SAFE  = MINES_TOTAL - MINES_COUNT; // 39
+
+// 배율 테이블: 보석 n개 찾았을 때의 배율
+// 공식: 매번 (잔여 안전칸/잔여 전체칸) 확률을 곱해 누적, 여기에 하우스 엣지 적용
+function calcMinesMultiplier(safeFound) {
+  if (safeFound <= 0) return 1.00;
+  // 매 단계 누적 확률 계산
+  let prob = 1.0;
+  for (let i = 0; i < safeFound; i++) {
+    const remaining = MINES_TOTAL - i;
+    const safePick  = MINES_SAFE  - i;
+    prob *= safePick / remaining;
+  }
+  // 하우스 엣지 0.97 적용 (=3% 수수료)
+  const fairMult = 1 / prob;
+  return Math.round(fairMult * 0.97 * 100) / 100;
+}
+
+let minesGameActive = false;
+let minesBoard = [];      // true=지뢰, false=보석
+let minesRevealed = [];   // 공개 여부
+let minesSafeFound = 0;
+let minesBetAmt = 0;
+
+window.openMinesGame = () => {
+  closeGameSelect();
+  document.getElementById('minesBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  updateAllGameDisplays();
+  initMinesUI();
+};
+window.closeMinesBack = () => {
+  if (minesGameActive) {
+    if (!confirm('게임 중 나가면 베팅 포인트를 잃습니다. 나가시겠습니까?')) return;
+    minesGameActive = false;
+    if (minesBetAmt > 0) addPoints(currentUser.uid, -minesBetAmt);
+    minesBetAmt = 0;
+  }
+  document.getElementById('minesBg').classList.remove('open');
+  document.body.style.overflow = '';
+  openGameSelect();
+};
+window.closeMinesGame = () => {
+  if (minesGameActive) {
+    if (!confirm('게임 중 나가면 베팅 포인트를 잃습니다. 나가시겠습니까?')) return;
+    minesGameActive = false;
+    if (minesBetAmt > 0) addPoints(currentUser.uid, -minesBetAmt);
+    minesBetAmt = 0;
+  }
+  document.getElementById('minesBg').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+function initMinesUI() {
+  minesGameActive = false;
+  minesBoard = [];
+  minesRevealed = [];
+  minesSafeFound = 0;
+  minesBetAmt = 0;
+
+  // 베팅 섹션 표시, 상태바 숨김
+  document.getElementById('minesBetSection').style.display = 'flex';
+  document.getElementById('minesStateBar').style.display = 'none';
+  document.getElementById('minesIdleInfo').style.display = 'block';
+
+  // 버튼 상태
+  document.getElementById('minesStartBtn').style.display = 'inline-block';
+  document.getElementById('minesCashoutBtn').style.display = 'none';
+
+  // 결과 메시지
+  const res = document.getElementById('minesResult');
+  res.className = 'mines-result-msg idle';
+  res.textContent = '베팅 포인트를 설정하고 시작하세요.';
+
+  // 빈 그리드
+  renderMinesGrid(false);
+}
+
+function renderMinesGrid(active) {
+  const grid = document.getElementById('minesGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < MINES_TOTAL; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'mine-cell';
+    cell.dataset.idx = i;
+
+    if (!active) {
+      // 비활성: 회색 잠긴 셀
+      cell.classList.add('disabled');
+      cell.textContent = '';
+    } else if (minesRevealed[i]) {
+      if (minesBoard[i]) {
+        cell.classList.add('revealed-bomb'); cell.textContent = '💣';
+      } else {
+        cell.classList.add('revealed-safe'); cell.textContent = '💎';
+      }
+    } else {
+      // 아직 클릭 안 한 셀
+      cell.onclick = () => minesClickCell(i);
+    }
+    grid.appendChild(cell);
   }
 }
 
-// 초기 룰렛 그리기
-setTimeout(() => { drawRoulette(); updateGameDisplay(); }, 100);
+window.setMinesBet = function(v) {
+  document.getElementById('minesBetInput').value = v;
+  document.querySelectorAll('#minesBetSection .bet-btn').forEach(b => b.classList.toggle('on', parseInt(b.textContent) === v));
+};
+window.setMinesAllIn = function() {
+  document.getElementById('minesBetInput').value = myPoints;
+  document.querySelectorAll('#minesBetSection .bet-btn').forEach(b => b.classList.remove('on'));
+};
 
-// ===================================================================
-// ===== RANDOM CHAT SYSTEM ===========================================
-// ===================================================================
+window.startMinesGame = async () => {
+  if (!currentUser) { toast('로그인 후 이용하세요'); return; }
+  const bet = parseInt(document.getElementById('minesBetInput').value) || 0;
+  if (bet <= 0) { toast('베팅 포인트를 입력하세요'); return; }
+  if (bet > myPoints) { toast('포인트가 부족합니다'); return; }
 
-let rcRoomId = null;       // 현재 채팅방 ID
-let rcMyRole = null;       // 'A' | 'B'
-let rcUnsubscribeRoom = null;  // Firestore 구독 해제 함수
-let rcUnsubscribeMsgs = null;  // 메시지 구독 해제 함수
-let rcSearchInterval = null;   // 매칭 폴링 interval
-let rcPendingFile = null;      // 첨부할 파일 객체
-let rcDotsInterval = null;     // 점 애니메이션 interval
+  minesBetAmt = bet;
+  minesSafeFound = 0;
 
-// 내 랜덤채팅용 닉(uid 앞 8자)
-function getRcMyId() {
-  if (!currentUser) return '익명';
-  return currentUser.uid.slice(0, 8);
+  // 지뢰 배치 (무작위)
+  minesBoard = Array(MINES_TOTAL).fill(false);
+  minesRevealed = Array(MINES_TOTAL).fill(false);
+  const positions = [...Array(MINES_TOTAL).keys()].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < MINES_COUNT; i++) minesBoard[positions[i]] = true;
+
+  minesGameActive = true;
+
+  // 베팅 포인트 차감
+  await addPoints(currentUser.uid, -bet);
+
+  // UI 업데이트
+  document.getElementById('minesBetSection').style.display = 'none';
+  document.getElementById('minesStateBar').style.display = 'flex';
+  document.getElementById('minesIdleInfo').style.display = 'none';
+  document.getElementById('minesStartBtn').style.display = 'none';
+
+  const cashoutBtn = document.getElementById('minesCashoutBtn');
+  cashoutBtn.style.display = 'inline-block';
+  cashoutBtn.disabled = true; // 최소 1개 찾아야 활성화
+
+  updateMinesStateBar();
+  renderMinesGrid(true);
+
+  const res = document.getElementById('minesResult');
+  res.className = 'mines-result-msg idle';
+  res.textContent = '💎 보석을 클릭하세요! 지뢰를 피해 최대한 많이 찾아보세요!';
+};
+
+function updateMinesStateBar() {
+  const mult = calcMinesMultiplier(minesSafeFound);
+  const profit = Math.floor(minesBetAmt * mult) - minesBetAmt;
+  const cashoutTotal = Math.floor(minesBetAmt * mult);
+
+  document.getElementById('minesStatBet').textContent = minesBetAmt.toLocaleString() + 'P';
+
+  const multEl = document.getElementById('minesStatMult');
+  multEl.textContent = mult.toFixed(2) + '×';
+  multEl.className = `mines-state-val mines-mult-display ${minesSafeFound > 0 ? 'green' : ''}`;
+
+  document.getElementById('minesStatProfit').textContent = (profit >= 0 ? '+' : '') + profit.toLocaleString() + 'P';
+  document.getElementById('minesStatSafe').textContent = (MINES_SAFE - minesSafeFound) + '개 남음';
+
+  document.getElementById('cashoutAmt').textContent = cashoutTotal.toLocaleString() + 'P';
 }
 
-// 랜덤채팅 모달 열기
+async function minesClickCell(idx) {
+  if (!minesGameActive || minesRevealed[idx]) return;
+  minesRevealed[idx] = true;
+
+  const cells = document.querySelectorAll('.mine-cell');
+  const cell = cells[idx];
+  cell.onclick = null;
+
+  if (minesBoard[idx]) {
+    // 💣 지뢰!
+    cell.classList.add('revealed-bomb'); cell.textContent = '💣';
+    minesGameActive = false;
+
+    // 애니메이션 후 전체 공개
+    playLoseSound();
+    cell.style.animation = 'bombShake 0.35s ease';
+    setTimeout(() => revealAllBombs(), 400);
+
+    const res = document.getElementById('minesResult');
+    res.className = 'mines-result-msg lose';
+    res.textContent = `💥 지뢰 폭발! -${minesBetAmt.toLocaleString()}P 잃었습니다.`;
+
+    document.getElementById('minesCashoutBtn').style.display = 'none';
+    setTimeout(() => showMinesRestart(), 2000);
+
+  } else {
+    // 💎 보석!
+    cell.classList.add('revealed-safe'); cell.textContent = '💎';
+    minesSafeFound++;
+
+    playSafeSound();
+    updateMinesStateBar();
+
+    // 1개 이상 찾으면 수익실현 버튼 활성화
+    document.getElementById('minesCashoutBtn').disabled = false;
+
+    const res = document.getElementById('minesResult');
+    const mult = calcMinesMultiplier(minesSafeFound);
+    res.className = 'mines-result-msg win';
+    res.textContent = `💎 ${minesSafeFound}개 발견! 현재 ${mult.toFixed(2)}× · 수익실현 가능`;
+
+    // 모든 보석 찾으면 자동 완료
+    if (minesSafeFound === MINES_SAFE) {
+      await minesCashout(true);
+    }
+  }
+}
+
+function revealAllBombs() {
+  const cells = document.querySelectorAll('.mine-cell');
+  for (let i = 0; i < MINES_TOTAL; i++) {
+    if (!minesRevealed[i]) {
+      cells[i].onclick = null;
+      cells[i].classList.add('disabled');
+      if (minesBoard[i]) {
+        cells[i].classList.add('show-unrevealed-bomb'); cells[i].textContent = '💣';
+      } else {
+        cells[i].classList.add('show-unrevealed-safe'); cells[i].textContent = '💎';
+      }
+    }
+  }
+}
+
+function showMinesRestart() {
+  document.getElementById('minesStartBtn').style.display = 'inline-block';
+  document.getElementById('minesBetSection').style.display = 'flex';
+  document.getElementById('minesStateBar').style.display = 'none';
+  document.getElementById('minesIdleInfo').style.display = 'none';
+  document.getElementById('minesBetInput').value = Math.min(minesBetAmt, myPoints);
+  minesBetAmt = 0;
+}
+
+window.minesCashout = async (isAuto = false) => {
+  if (!minesGameActive || minesSafeFound <= 0) return;
+  minesGameActive = false;
+
+  const mult = calcMinesMultiplier(minesSafeFound);
+  const payout = Math.floor(minesBetAmt * mult);
+  const profit = payout - minesBetAmt;
+
+  await addPoints(currentUser.uid, payout);
+  updateAllGameDisplays();
+
+  if (profit > 0) { playWinSound(); launchConfetti(); }
+
+  const res = document.getElementById('minesResult');
+  res.className = 'mines-result-msg win';
+  if (isAuto) {
+    res.textContent = `🏆 전부 찾았습니다! ${payout.toLocaleString()}P 획득! (+${profit.toLocaleString()}P)`;
+  } else {
+    res.textContent = `✅ 수익 실현! ${payout.toLocaleString()}P 획득 (+${profit.toLocaleString()}P, ${mult.toFixed(2)}×)`;
+  }
+
+  // 공개되지 않은 칸들 모두 보여주기
+  revealAllBombs();
+  document.getElementById('minesCashoutBtn').style.display = 'none';
+
+  setTimeout(() => showMinesRestart(), 2000);
+};
+
+function playSafeSound() {
+  try {
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.frequency.setValueAtTime(880, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1200, ac.currentTime + 0.1);
+    o.type = 'sine';
+    g.gain.setValueAtTime(0.2, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.2);
+    o.start(ac.currentTime); o.stop(ac.currentTime + 0.2);
+  } catch(e) {}
+}
+
+// =====================================================================
+// ===== RANDOM CHAT ===================================================
+// =====================================================================
+let rcRoomId = null, rcMyRole = null, rcUnsubscribeRoom = null, rcUnsubscribeMsgs = null;
+let rcSearchInterval = null, rcPendingFile = null, rcDotsInterval = null;
+
+function getRcMyId() { if (!currentUser) return '익명'; return currentUser.uid.slice(0, 8); }
+
 window.openRandomChat = () => {
   if (!currentUser) { toast('로그인 후 이용 가능합니다'); return; }
   document.getElementById('rcBg').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  rcShowPanel('waiting');
-  rcSetStatus('대기중');
+  rcShowPanel('waiting'); rcSetStatus('대기중');
 };
-
-// 랜덤채팅 모달 닫기 (채팅 중이면 종료 처리)
 window.closeRandomChat = async () => {
   if (rcRoomId) await endRandomChat(true);
   document.getElementById('rcBg').style.display = 'none';
   document.body.style.overflow = '';
 };
-
-// 상대방 찾기 시작
 window.startRandomChat = async () => {
   if (!currentUser) return;
   document.getElementById('rcStartBtn').style.display = 'none';
   document.getElementById('rcSearchingMsg').style.display = 'block';
   rcSetStatus('매칭중');
-
-  // 점 애니메이션
   let dots = 0;
-  rcDotsInterval = setInterval(() => {
-    dots = (dots + 1) % 4;
-    document.getElementById('rcDots').textContent = '상대방을 찾는 중' + '.'.repeat(dots);
-  }, 500);
-
+  rcDotsInterval = setInterval(() => { dots = (dots + 1) % 4; document.getElementById('rcDots').textContent = '상대방을 찾는 중' + '.'.repeat(dots); }, 500);
   await rcMatchOrCreate();
 };
 
 async function rcMatchOrCreate() {
   try {
-    // 대기 중인 방(userB 없음) 중 내가 만든 것 아닌 것 찾기
-    const q = query(
-      collection(db, 'rc_rooms'),
-      where('status', '==', 'waiting'),
-      limit(5)
-    );
+    const q = query(collection(db, 'rc_rooms'), where('status', '==', 'waiting'), limit(5));
     const snap = await getDocs(q);
     let joined = false;
-
     for (const roomDoc of snap.docs) {
       const data = roomDoc.data();
-      if (data.userA === currentUser.uid) continue; // 내가 만든 방 스킵
-
-      // 방에 참가
+      if (data.userA === currentUser.uid) continue;
       try {
-        await updateDoc(doc(db, 'rc_rooms', roomDoc.id), {
-          userB: currentUser.uid,
-          userBId: getRcMyId(),
-          status: 'active',
-          startedAt: serverTimestamp()
-        });
-        rcRoomId = roomDoc.id;
-        rcMyRole = 'B';
-        joined = true;
-        clearInterval(rcDotsInterval);
-        rcEnterChat(data.userAId || data.userA.slice(0, 8));
-        rcSubscribeRoom();
-        rcSubscribeMsgs();
-        break;
-      } catch(e) { /* 동시 경쟁 실패 시 다음으로 */ }
+        await updateDoc(doc(db, 'rc_rooms', roomDoc.id), { userB: currentUser.uid, userBId: getRcMyId(), status: 'active', startedAt: serverTimestamp() });
+        rcRoomId = roomDoc.id; rcMyRole = 'B'; joined = true;
+        clearInterval(rcDotsInterval); rcEnterChat(data.userAId || data.userA.slice(0, 8));
+        rcSubscribeRoom(); rcSubscribeMsgs(); break;
+      } catch(e) {}
     }
-
     if (!joined) {
-      // 대기방 생성
-      const ref = await addDoc(collection(db, 'rc_rooms'), {
-        userA: currentUser.uid,
-        userAId: getRcMyId(),
-        userB: null,
-        status: 'waiting',
-        createdAt: serverTimestamp()
-      });
-      rcRoomId = ref.id;
-      rcMyRole = 'A';
-      // 상대방이 들어올 때까지 폴링
+      const ref = await addDoc(collection(db, 'rc_rooms'), { userA: currentUser.uid, userAId: getRcMyId(), userB: null, status: 'waiting', createdAt: serverTimestamp() });
+      rcRoomId = ref.id; rcMyRole = 'A';
       rcSearchInterval = setInterval(rcPollForMatch, 2000);
     }
-  } catch(e) {
-    clearInterval(rcDotsInterval);
-    toast('매칭 오류: ' + e.message);
-    rcResetSearchUI();
-  }
+  } catch(e) { clearInterval(rcDotsInterval); toast('매칭 오류: ' + e.message); rcResetSearchUI(); }
 }
-
 async function rcPollForMatch() {
   if (!rcRoomId) { clearInterval(rcSearchInterval); return; }
   try {
     const snap = await getDoc(doc(db, 'rc_rooms', rcRoomId));
     if (!snap.exists()) { clearInterval(rcSearchInterval); return; }
     const data = snap.data();
-    if (data.status === 'active' && data.userB) {
-      clearInterval(rcSearchInterval);
-      clearInterval(rcDotsInterval);
-      rcEnterChat(data.userBId || data.userB.slice(0, 8));
-      rcSubscribeRoom();
-      rcSubscribeMsgs();
-    }
+    if (data.status === 'active' && data.userB) { clearInterval(rcSearchInterval); clearInterval(rcDotsInterval); rcEnterChat(data.userBId || data.userB.slice(0, 8)); rcSubscribeRoom(); rcSubscribeMsgs(); }
   } catch(e) {}
 }
-
-function rcEnterChat(partnerDisplayId) {
-  document.getElementById('rcPartnerNick').textContent = partnerDisplayId;
-  document.getElementById('rcMsgList').innerHTML = '';
-  rcShowPanel('chat');
-  rcSetStatus('채팅중');
-}
-
+function rcEnterChat(partnerDisplayId) { document.getElementById('rcPartnerNick').textContent = partnerDisplayId; document.getElementById('rcMsgList').innerHTML = ''; rcShowPanel('chat'); rcSetStatus('채팅중'); }
 function rcSubscribeRoom() {
   if (rcUnsubscribeRoom) rcUnsubscribeRoom();
-  rcUnsubscribeRoom = onSnapshot(doc(db, 'rc_rooms', rcRoomId), (snap) => {
-    if (!snap.exists()) { rcHandleRoomGone(); return; }
-    const data = snap.data();
-    if (data.status === 'ended') rcHandleRoomGone();
-  });
+  rcUnsubscribeRoom = onSnapshot(doc(db, 'rc_rooms', rcRoomId), (snap) => { if (!snap.exists()) { rcHandleRoomGone(); return; } const data = snap.data(); if (data.status === 'ended') rcHandleRoomGone(); });
 }
-
 function rcSubscribeMsgs() {
   if (rcUnsubscribeMsgs) rcUnsubscribeMsgs();
   const q = query(collection(db, 'rc_rooms', rcRoomId, 'messages'), orderBy('time', 'asc'));
   rcUnsubscribeMsgs = onSnapshot(q, (snap) => {
-    const list = document.getElementById('rcMsgList');
-    list.innerHTML = '';
-    snap.docs.forEach(d => {
-      const data = d.data();
-      const isMe = data.uid === currentUser.uid;
-      list.appendChild(rcBuildMsgEl(data, isMe));
-    });
+    const list = document.getElementById('rcMsgList'); list.innerHTML = '';
+    snap.docs.forEach(d => { const data = d.data(); const isMe = data.uid === currentUser.uid; list.appendChild(rcBuildMsgEl(data, isMe)); });
     list.scrollTop = list.scrollHeight;
   });
 }
-
 function rcBuildMsgEl(data, isMe) {
   const wrap = document.createElement('div');
-  wrap.style.cssText = `display:flex; flex-direction:column; align-items:${isMe?'flex-end':'flex-start'}; gap:2px;`;
-
-  const label = document.createElement('div');
-  label.style.cssText = 'font-size:10px; color:#aaa; padding:0 4px;';
-  label.textContent = isMe ? '나' : (data.senderDisplayId || '상대방');
-  wrap.appendChild(label);
-
+  wrap.style.cssText = `display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'};gap:2px;`;
+  const label = document.createElement('div'); label.style.cssText = 'font-size:10px;color:#aaa;padding:0 4px;'; label.textContent = isMe ? '나' : (data.senderDisplayId || '상대방'); wrap.appendChild(label);
   if (data.mediaUrl) {
-    const mediaWrap = document.createElement('div');
-    mediaWrap.style.cssText = `max-width:220px; border-radius:8px; overflow:hidden; border:1px solid #ddd; cursor:pointer; background:${isMe?'#1a5276':'#f0f0f0'};`;
-    if (data.mediaType === 'video') {
-      const vid = document.createElement('video');
-      vid.src = data.mediaUrl;
-      vid.controls = true;
-      vid.style.cssText = 'max-width:220px; max-height:200px; display:block;';
-      mediaWrap.appendChild(vid);
-    } else {
-      const img = document.createElement('img');
-      img.src = data.mediaUrl;
-      img.style.cssText = 'max-width:220px; max-height:200px; display:block; object-fit:cover;';
-      img.onclick = () => { document.getElementById('lbImg').src = data.mediaUrl; document.getElementById('lb').classList.add('open'); };
-      mediaWrap.appendChild(img);
-    }
+    const mediaWrap = document.createElement('div'); mediaWrap.style.cssText = `max-width:220px;border-radius:8px;overflow:hidden;border:1px solid #ddd;cursor:pointer;background:${isMe?'#1a5276':'#f0f0f0'};`;
+    if (data.mediaType === 'video') { const vid = document.createElement('video'); vid.src = data.mediaUrl; vid.controls = true; vid.style.cssText = 'max-width:220px;max-height:200px;display:block;'; mediaWrap.appendChild(vid); }
+    else { const img = document.createElement('img'); img.src = data.mediaUrl; img.style.cssText = 'max-width:220px;max-height:200px;display:block;object-fit:cover;'; img.onclick = () => { document.getElementById('lbImg').src = data.mediaUrl; document.getElementById('lb').classList.add('open'); }; mediaWrap.appendChild(img); }
     wrap.appendChild(mediaWrap);
   }
-
   if (data.text && data.text.trim()) {
-    const bubble = document.createElement('div');
-    bubble.style.cssText = `max-width:260px; padding:8px 12px; border-radius:${isMe?'12px 4px 12px 12px':'4px 12px 12px 12px'}; font-size:13px; line-height:1.5; word-break:break-word; background:${isMe?'#1a5276':'#f0f0f0'}; color:${isMe?'#fff':'#222'};`;
-    bubble.textContent = data.text;
-    wrap.appendChild(bubble);
+    const bubble = document.createElement('div'); bubble.style.cssText = `max-width:260px;padding:8px 12px;border-radius:${isMe?'12px 4px 12px 12px':'4px 12px 12px 12px'};font-size:13px;line-height:1.5;word-break:break-word;background:${isMe?'#1a5276':'#f0f0f0'};color:${isMe?'#fff':'#222'};`; bubble.textContent = data.text; wrap.appendChild(bubble);
   }
-
-  const timeEl = document.createElement('div');
-  timeEl.style.cssText = 'font-size:10px; color:#bbb; padding:0 4px;';
-  if (data.time) {
-    const t = data.time.toDate ? data.time.toDate() : new Date(data.time.seconds * 1000);
-    timeEl.textContent = t.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
-  }
-  wrap.appendChild(timeEl);
-  return wrap;
+  const timeEl = document.createElement('div'); timeEl.style.cssText = 'font-size:10px;color:#bbb;padding:0 4px;';
+  if (data.time) { const t = data.time.toDate ? data.time.toDate() : new Date(data.time.seconds*1000); timeEl.textContent = t.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}); }
+  wrap.appendChild(timeEl); return wrap;
 }
-
-// 파일 선택
 window.onRcFileSelect = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 50 * 1024 * 1024) { toast('파일 크기는 50MB 이하여야 합니다'); e.target.value=''; return; }
-
-  rcPendingFile = file;
-  const isVideo = file.type.startsWith('video/');
-  const url = URL.createObjectURL(file);
-
-  document.getElementById('rcMediaPreview').style.display = 'block';
-  document.getElementById('rcMediaName').textContent = file.name;
-
-  if (isVideo) {
-    document.getElementById('rcImgThumb').style.display = 'none';
-    document.getElementById('rcVidThumb').style.display = 'block';
-    document.getElementById('rcVidIcon').style.display = 'flex';
-    document.getElementById('rcVidThumb').src = url;
-  } else {
-    document.getElementById('rcVidThumb').style.display = 'none';
-    document.getElementById('rcVidIcon').style.display = 'none';
-    document.getElementById('rcImgThumb').style.display = 'block';
-    document.getElementById('rcImgThumb').src = url;
-  }
+  const file = e.target.files[0]; if (!file) return;
+  if (file.size > 50 * 1024 * 1024) { toast('파일 크기는 50MB 이하'); e.target.value=''; return; }
+  rcPendingFile = file; const isVideo = file.type.startsWith('video/'); const url = URL.createObjectURL(file);
+  document.getElementById('rcMediaPreview').style.display = 'block'; document.getElementById('rcMediaName').textContent = file.name;
+  if (isVideo) { document.getElementById('rcImgThumb').style.display='none'; document.getElementById('rcVidThumb').style.display='block'; document.getElementById('rcVidIcon').style.display='flex'; document.getElementById('rcVidThumb').src=url; }
+  else { document.getElementById('rcVidThumb').style.display='none'; document.getElementById('rcVidIcon').style.display='none'; document.getElementById('rcImgThumb').style.display='block'; document.getElementById('rcImgThumb').src=url; }
   e.target.value = '';
 };
-
-window.clearRcMedia = () => {
-  rcPendingFile = null;
-  document.getElementById('rcMediaPreview').style.display = 'none';
-  document.getElementById('rcImgThumb').style.display = 'none';
-  document.getElementById('rcVidThumb').style.display = 'none';
-  document.getElementById('rcVidIcon').style.display = 'none';
-};
-
-// Cloudinary 업로드 (기존 함수와 동일 방식)
+window.clearRcMedia = () => { rcPendingFile=null; document.getElementById('rcMediaPreview').style.display='none'; document.getElementById('rcImgThumb').style.display='none'; document.getElementById('rcVidThumb').style.display='none'; document.getElementById('rcVidIcon').style.display='none'; };
 async function rcUploadMedia(file) {
-  const isVideo = file.type.startsWith('video/');
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', CLOUDINARY_PRESET);
+  const isVideo = file.type.startsWith('video/'); const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', CLOUDINARY_PRESET);
   if (isVideo) fd.append('resource_type', 'video');
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${isVideo?'video':'image'}/upload`, { method:'POST', body:fd });
-  const data = await res.json();
-  if (!data.secure_url) throw new Error('업로드 실패');
-  return { url: data.secure_url, type: isVideo ? 'video' : 'image' };
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${isVideo?'video':'image'}/upload`,{method:'POST',body:fd});
+  const data = await res.json(); if (!data.secure_url) throw new Error('업로드 실패'); return { url: data.secure_url, type: isVideo ? 'video' : 'image' };
 }
-
-// 메시지 전송
 window.sendRcMsg = async () => {
   if (!rcRoomId || !currentUser) return;
-  const input = document.getElementById('rcMsgInput');
-  const text = input.value.trim();
-  const hasFile = !!rcPendingFile;
+  const input = document.getElementById('rcMsgInput'); const text = input.value.trim(); const hasFile = !!rcPendingFile;
   if (!text && !hasFile) return;
-
-  const sendBtn = document.querySelector('#rcChatArea button[onclick="sendRcMsg()"]');
-  if (sendBtn) sendBtn.disabled = true;
-  input.disabled = true;
-
+  const sendBtn = document.querySelector('#rcChatArea button[onclick="sendRcMsg()"]'); if (sendBtn) sendBtn.disabled = true; input.disabled = true;
   try {
     let mediaUrl = null, mediaType = null;
-    if (hasFile) {
-      toast('미디어 업로드 중...');
-      const result = await rcUploadMedia(rcPendingFile);
-      mediaUrl = result.url;
-      mediaType = result.type;
-      clearRcMedia();
-    }
-
-    const msgData = {
-      uid: currentUser.uid,
-      senderDisplayId: getRcMyId(),
-      text: text || '',
-      time: serverTimestamp()
-    };
+    if (hasFile) { toast('미디어 업로드 중...'); const result = await rcUploadMedia(rcPendingFile); mediaUrl = result.url; mediaType = result.type; clearRcMedia(); }
+    const msgData = { uid: currentUser.uid, senderDisplayId: getRcMyId(), text: text || '', time: serverTimestamp() };
     if (mediaUrl) { msgData.mediaUrl = mediaUrl; msgData.mediaType = mediaType; }
-
     await addDoc(collection(db, 'rc_rooms', rcRoomId, 'messages'), msgData);
     input.value = '';
-  } catch(e) {
-    toast('전송 실패: ' + e.message);
-  }
-
-  if (sendBtn) sendBtn.disabled = false;
-  input.disabled = false;
-  input.focus();
+  } catch(e) { toast('전송 실패: ' + e.message); }
+  if (sendBtn) sendBtn.disabled = false; input.disabled = false; input.focus();
 };
-
-// 채팅 종료 (내가)
 window.endRandomChat = async (silent = false) => {
-  clearInterval(rcSearchInterval);
-  clearInterval(rcDotsInterval);
-
+  clearInterval(rcSearchInterval); clearInterval(rcDotsInterval);
   if (rcUnsubscribeRoom) { rcUnsubscribeRoom(); rcUnsubscribeRoom = null; }
   if (rcUnsubscribeMsgs) { rcUnsubscribeMsgs(); rcUnsubscribeMsgs = null; }
-
-  if (rcRoomId) {
-    try {
-      await updateDoc(doc(db, 'rc_rooms', rcRoomId), { status: 'ended', endedAt: serverTimestamp() });
-      await rcDeleteRoomData(rcRoomId);
-    } catch(e) {}
-    rcRoomId = null; rcMyRole = null;
-  }
-
-  if (!silent) {
-    rcShowPanel('ended');
-    rcSetStatus('종료');
-  } else {
-    document.body.style.overflow = '';
-  }
+  if (rcRoomId) { try { await updateDoc(doc(db, 'rc_rooms', rcRoomId), { status: 'ended', endedAt: serverTimestamp() }); await rcDeleteRoomData(rcRoomId); } catch(e) {} rcRoomId = null; rcMyRole = null; }
+  if (!silent) { rcShowPanel('ended'); rcSetStatus('종료'); } else { document.body.style.overflow = ''; }
 };
+async function rcDeleteRoomData(roomId) { try { const msgsSnap = await getDocs(collection(db,'rc_rooms',roomId,'messages')); const batch = writeBatch(db); msgsSnap.docs.forEach(d => batch.delete(d.ref)); await batch.commit(); await deleteDoc(doc(db,'rc_rooms',roomId)); } catch(e) {} }
+function rcHandleRoomGone() { clearInterval(rcSearchInterval); clearInterval(rcDotsInterval); if(rcUnsubscribeRoom){rcUnsubscribeRoom();rcUnsubscribeRoom=null;} if(rcUnsubscribeMsgs){rcUnsubscribeMsgs();rcUnsubscribeMsgs=null;} rcRoomId=null; rcMyRole=null; rcShowPanel('ended'); rcSetStatus('종료'); toast('상대방이 채팅을 종료했습니다'); }
+window.resetRandomChat = () => { rcResetSearchUI(); rcShowPanel('waiting'); rcSetStatus('대기중'); };
+function rcResetSearchUI() { document.getElementById('rcStartBtn').style.display='inline-block'; document.getElementById('rcSearchingMsg').style.display='none'; document.getElementById('rcMsgList').innerHTML=''; clearRcMedia(); }
+function rcShowPanel(which) { document.getElementById('rcWaiting').style.display=which==='waiting'?'flex':'none'; document.getElementById('rcChatArea').style.display=which==='chat'?'flex':'none'; document.getElementById('rcEndedArea').style.display=which==='ended'?'flex':'none'; }
+function rcSetStatus(text) { document.getElementById('rcStatusBadge').textContent = text; }
 
-async function rcDeleteRoomData(roomId) {
-  try {
-    // 메시지 서브컬렉션 삭제
-    const msgsSnap = await getDocs(collection(db, 'rc_rooms', roomId, 'messages'));
-    const batch = writeBatch(db);
-    msgsSnap.docs.forEach(d => batch.delete(d.ref));
-    await batch.commit();
-    // 방 문서 삭제
-    await deleteDoc(doc(db, 'rc_rooms', roomId));
-  } catch(e) {}
-}
-
-// 상대방이 종료했을 때
-function rcHandleRoomGone() {
-  clearInterval(rcSearchInterval);
-  clearInterval(rcDotsInterval);
-  if (rcUnsubscribeRoom) { rcUnsubscribeRoom(); rcUnsubscribeRoom = null; }
-  if (rcUnsubscribeMsgs) { rcUnsubscribeMsgs(); rcUnsubscribeMsgs = null; }
-  rcRoomId = null; rcMyRole = null;
-  rcShowPanel('ended');
-  rcSetStatus('종료');
-  toast('상대방이 채팅을 종료했습니다');
-}
-
-// 다시 찾기
-window.resetRandomChat = () => {
-  rcResetSearchUI();
-  rcShowPanel('waiting');
-  rcSetStatus('대기중');
-};
-
-function rcResetSearchUI() {
-  document.getElementById('rcStartBtn').style.display = 'inline-block';
-  document.getElementById('rcSearchingMsg').style.display = 'none';
-  document.getElementById('rcMsgList').innerHTML = '';
-  clearRcMedia();
-}
-
-function rcShowPanel(which) {
-  document.getElementById('rcWaiting').style.display  = which === 'waiting' ? 'flex' : 'none';
-  document.getElementById('rcChatArea').style.display = which === 'chat'    ? 'flex' : 'none';
-  document.getElementById('rcEndedArea').style.display = which === 'ended'  ? 'flex' : 'none';
-}
-
-function rcSetStatus(text) {
-  document.getElementById('rcStatusBadge').textContent = text;
-}
+window.setMobileTab = (el) => { document.querySelectorAll('.mobile-tab-bar a').forEach(a => a.classList.remove('active')); el.classList.add('active'); };
 </script>
 
 <!-- NICKNAME CHANGE MODAL -->
 <div id="nickModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9000; align-items:center; justify-content:center;">
   <div style="background:#fff; width:340px; padding:0; border-top:3px solid #1a5276; box-shadow:0 4px 24px rgba(0,0,0,0.25); border-radius:2px; overflow:hidden;">
-    <div style="background:#1a5276; color:#fff; padding:11px 16px; font-size:13px; font-weight:700; letter-spacing:1px; display:flex; justify-content:space-between; align-items:center;">
-      닉네임 변경
-      <button onclick="closeNickModal()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
-    </div>
+    <div style="background:#1a5276; color:#fff; padding:11px 16px; font-size:13px; font-weight:700; letter-spacing:1px; display:flex; justify-content:space-between; align-items:center;">닉네임 변경<button onclick="closeNickModal()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button></div>
     <div style="padding:22px 20px;">
-      <div id="nickCostBadge" style="background:#f0f6fc; border:1px solid #c8dff0; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:12px; color:#1a3a5c; line-height:1.8;">
-        <strong>닉네임 변경 비용</strong><br>
-        · 최초 1회: <strong style="color:#1a7a4a;">무료</strong><br>
-        · 2회째~: <strong style="color:#c0392b;">500P</strong> 차감<br>
-        <span id="nickMyPtsLine" style="color:#555;">현재 포인트: <strong id="nickMyPts">0P</strong></span>
-      </div>
-      <div style="margin-bottom:10px;">
-        <div style="font-size:11px; color:#888; margin-bottom:5px;">현재 닉네임</div>
-        <div id="nickCurrent" style="font-size:13px; font-weight:700; color:#333; padding:6px 10px; background:#f7f7f7; border:1px solid #eee; border-radius:2px;"></div>
-      </div>
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px; color:#888; margin-bottom:5px;">새 닉네임 <span style="color:#bbb;">(2~12자)</span></div>
-        <input id="nickInput" type="text" maxlength="12" placeholder="새 닉네임 입력" style="width:100%; padding:8px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:2px; outline:none; box-sizing:border-box;">
-      </div>
+      <div id="nickCostBadge" style="background:#f0f6fc; border:1px solid #c8dff0; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:12px; color:#1a3a5c; line-height:1.8;"></div>
+      <div style="margin-bottom:10px;"><div style="font-size:11px; color:#888; margin-bottom:5px;">현재 닉네임</div><div id="nickCurrent" style="font-size:13px; font-weight:700; color:#333; padding:6px 10px; background:#f7f7f7; border:1px solid #eee; border-radius:2px;"></div></div>
+      <div style="margin-bottom:16px;"><div style="font-size:11px; color:#888; margin-bottom:5px;">새 닉네임 <span style="color:#bbb;">(2~12자)</span></div><input id="nickInput" type="text" maxlength="12" placeholder="새 닉네임 입력" style="width:100%; padding:8px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:2px; outline:none; box-sizing:border-box;"></div>
       <button onclick="submitNickChange()" id="nickSubmitBtn" style="width:100%; padding:10px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:2px; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px;">변경하기</button>
       <div id="nickErrMsg" style="text-align:center; font-size:11px; color:#c0392b; margin-top:8px; min-height:16px;"></div>
     </div>
   </div>
 </div>
 
-<!-- ===== RANDOM CHAT MODAL ===== -->
+<!-- RANDOM CHAT MODAL -->
 <div id="rcBg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:7500; align-items:center; justify-content:center;">
   <div id="rcBox" style="background:#fff; width:100%; max-width:480px; height:600px; display:flex; flex-direction:column; border-top:3px solid #1a5276; box-shadow:0 6px 30px rgba(0,0,0,0.3); border-radius:2px; overflow:hidden; margin:10px;">
-
-    <!-- 헤더 -->
     <div style="background:#1a5276; color:#fff; padding:11px 14px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
       <div style="font-size:13px; font-weight:700; letter-spacing:1px;">랜덤채팅</div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <span id="rcStatusBadge" style="font-size:11px; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">대기중</span>
-        <button onclick="closeRandomChat()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button>
-      </div>
+      <div style="display:flex; gap:8px; align-items:center;"><span id="rcStatusBadge" style="font-size:11px; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">대기중</span><button onclick="closeRandomChat()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:0.8;padding:0 2px;">✕</button></div>
     </div>
-
-    <!-- 대기 화면 -->
     <div id="rcWaiting" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
       <div style="font-size:36px; font-weight:900; color:#1a5276; margin-bottom:16px; letter-spacing:2px;">RANDOM</div>
       <div style="font-size:15px; font-weight:700; color:#1a3a5c; margin-bottom:8px;">랜덤으로 상대방을 찾아드려요</div>
-      <div style="font-size:12px; color:#888; line-height:1.8; margin-bottom:24px;">
-        · 채팅 종료 시 모든 대화 내용이 삭제됩니다<br>
-        · 상대방 아이디만 표시됩니다<br>
-        · 이미지 및 동영상 첨부 가능 (최대 50MB)<br>
-        · 불건전한 채팅은 이용이 제한될 수 있습니다
-      </div>
+      <div style="font-size:12px; color:#888; line-height:1.8; margin-bottom:24px;">· 채팅 종료 시 모든 대화 내용이 삭제됩니다<br>· 상대방 아이디만 표시됩니다<br>· 이미지 및 동영상 첨부 가능 (최대 50MB)</div>
       <button id="rcStartBtn" onclick="startRandomChat()" style="padding:10px 36px; background:#1a5276; color:#fff; border:none; font-size:14px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px;">상대방 찾기</button>
-      <div id="rcSearchingMsg" style="display:none; margin-top:16px; font-size:13px; color:#888;">
-        <span id="rcDots">상대방을 찾는 중</span>
-      </div>
+      <div id="rcSearchingMsg" style="display:none; margin-top:16px; font-size:13px; color:#888;"><span id="rcDots">상대방을 찾는 중</span></div>
     </div>
-
-    <!-- 채팅 화면 -->
     <div id="rcChatArea" style="flex:1; display:none; flex-direction:column; overflow:hidden;">
-      <!-- 파트너 정보 바 -->
       <div style="background:#f0f6fc; border-bottom:1px solid #dde; padding:8px 14px; font-size:12px; color:#1a3a5c; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
         <span>상대방: <strong id="rcPartnerNick" style="color:#1a5276;">-</strong></span>
         <button onclick="endRandomChat()" style="padding:3px 12px; background:#c0392b; color:#fff; border:none; font-size:11px; font-weight:700; cursor:pointer; border-radius:3px; font-family:'Noto Sans KR',sans-serif;">채팅 종료</button>
       </div>
-
-      <!-- 메시지 목록 -->
       <div id="rcMsgList" style="flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
-
-      <!-- 입력 영역 -->
       <div style="border-top:1px solid #eee; padding:10px; flex-shrink:0;">
-        <!-- 미디어 미리보기 -->
         <div id="rcMediaPreview" style="display:none; margin-bottom:8px; position:relative;">
           <div id="rcMediaThumb" style="max-width:120px; max-height:100px; overflow:hidden; border:1px solid #ddd; border-radius:4px; position:relative; display:inline-block;">
             <img id="rcImgThumb" style="display:none; width:120px; height:80px; object-fit:cover;">
             <video id="rcVidThumb" style="display:none; width:120px; height:80px; object-fit:cover;" muted></video>
-            <div id="rcVidIcon" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px;">▶</div>
+            <div id="rcVidIcon" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; color:#fff; font-size:20px;">▶</div>
           </div>
           <button onclick="clearRcMedia()" style="position:absolute; top:-6px; left:114px; background:#c0392b; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
           <div id="rcMediaName" style="font-size:10px; color:#888; margin-top:3px; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <!-- 파일 첨부 버튼 -->
-          <label style="cursor:pointer; flex-shrink:0; padding:6px 8px; background:#f0f0f0; border:1px solid #ccc; border-radius:4px; font-size:14px; line-height:1; display:flex; align-items:center; gap:2px; color:#555;" title="이미지/동영상 첨부">
-            +
-            <input type="file" id="rcFileInput" accept="image/*,video/*" style="display:none;" onchange="onRcFileSelect(event)">
-          </label>
-          <input id="rcMsgInput" type="text" placeholder="메시지를 입력하세요..." maxlength="300"
-            style="flex:1; padding:7px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:4px; outline:none;"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendRcMsg();}">
+          <label style="cursor:pointer; flex-shrink:0; padding:6px 8px; background:#f0f0f0; border:1px solid #ccc; border-radius:4px; font-size:14px; display:flex; align-items:center;" title="이미지/동영상 첨부">+<input type="file" id="rcFileInput" accept="image/*,video/*" style="display:none;" onchange="onRcFileSelect(event)"></label>
+          <input id="rcMsgInput" type="text" placeholder="메시지를 입력하세요..." maxlength="300" style="flex:1; padding:7px 10px; border:1px solid #ccc; font-size:13px; font-family:'Noto Sans KR',sans-serif; border-radius:4px; outline:none;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendRcMsg();}">
           <button onclick="sendRcMsg()" style="padding:7px 16px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif; flex-shrink:0;">전송</button>
         </div>
       </div>
     </div>
-
-    <!-- 종료 화면 -->
     <div id="rcEndedArea" style="flex:1; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
       <div style="font-size:32px; font-weight:900; color:#888; margin-bottom:16px;">END</div>
       <div style="font-size:15px; font-weight:700; color:#333; margin-bottom:8px;">채팅이 종료되었습니다</div>
       <div style="font-size:12px; color:#888; margin-bottom:24px;">대화 내용은 모두 삭제됩니다.</div>
       <button onclick="resetRandomChat()" style="padding:9px 28px; background:#1a5276; color:#fff; border:none; font-size:13px; font-weight:700; cursor:pointer; border-radius:4px; font-family:'Noto Sans KR',sans-serif;">다시 찾기</button>
     </div>
-
   </div>
 </div>
 
@@ -2362,20 +2279,13 @@ function rcSetStatus(text) {
     <div style="text-align:center; font-size:11px; color:#aaa; cursor:pointer;" onclick="closeEmailModal()">닫기</div>
   </div>
 </div>
+
 <!-- MOBILE BOTTOM TAB BAR -->
 <nav class="mobile-tab-bar" id="mobileTabBar">
-  <a onclick="goBoard('all'); setMobileTab(this);" class="active">
-    <span class="mtb-icon">H</span>전체글
-  </a>
-  <a onclick="goBoard('free'); setMobileTab(this);">
-    <span class="mtb-icon">B</span>자유게시판
-  </a>
-  <a onclick="openRandomChat(); setMobileTab(this);">
-    <span class="mtb-icon">C</span>랜덤채팅
-  </a>
-  <a onclick="openGameModal(); setMobileTab(this);">
-    <span class="mtb-icon">G</span>포인트게임
-  </a>
+  <a onclick="goBoard('all'); setMobileTab(this);" class="active"><span class="mtb-icon">H</span>전체글</a>
+  <a onclick="goBoard('free'); setMobileTab(this);"><span class="mtb-icon">B</span>자유게시판</a>
+  <a onclick="openRandomChat(); setMobileTab(this);"><span class="mtb-icon">C</span>랜덤채팅</a>
+  <a onclick="openGameSelect(); setMobileTab(this);"><span class="mtb-icon">G</span>포인트게임</a>
 </nav>
 </body>
 </html>
